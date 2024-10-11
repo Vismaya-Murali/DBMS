@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Select Train</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="main-container">
+        <h2>Welcome to TreatsOnTracks</h2>
+        <form action="/select_train" method="POST">
+            <label for="src">Source Station:</label>
+            <input type="text" id="src" name="src" required>
+            <label for="dest">Destination Station:</label>
+            <input type="text" id="dest" name="dest" required>
+            <button type="submit">Search Trains</button>
+        </form>
+    </div>
+</body>
+</html>
