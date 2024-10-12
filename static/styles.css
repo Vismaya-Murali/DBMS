@@ -1,60 +1,190 @@
+*{
+    /* margin: 0;
+    padding: 0; */
+    text-decoration: none;
+}
+
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f2f2f2;
-    color: #333;
-    margin: 0;
-    padding: 0;
-}
-
-h2 {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.login-container, .main-container {
-    max-width: 400px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-}
-
-label {
-    margin-top: 10px;
-}
-
-input, select {
-    padding: 10px;
-    margin-top: 5px;
-    font-size: 16px;
-}
-
-button {
-    padding: 10px;
-    margin-top: 15px;
-    background-color: #007bff;
+    overflow: hidden;
     color: white;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
+    animation: fadeIn 1s ease-in-out;
+    background-color: black;
+    background-attachment: fixed;
 }
 
-button:hover {
-    background-color: #0056b3;
+header {
+    width: 100%;
+    height: 100vh;
+    background-color: transparent;
+    animation: fadeIn 1s ease-in-out;
+    }
+
+/*    Add animated stars */
+
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background-color: #fff;
+    animation: twinkle 25 infinite;
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.5);
+    }
+
+@keyframes twinkle{
+    0% {
+    opacity: 0.5;
+    }
+    50% {
+    opacity:1;
+    }
+    100% {
+    opacity: 0.5;
+    }
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    animation: slideInFromTop 1s ease-in-out;
 }
 
-ul li {
-    background-color: #e9ecef;
-    margin-bottom: 5px;
-    padding: 10px;
+.navbar img {
+    width: 50px;
+    animation: rotateIn 1s ease-in-out;
+}
+
+.navbar .center-nav a,
+.social a {
+    color: white;
+    margin-left: 15px;
+    font-size: 1.3rem;
+    transition: all 0.5s ease;
+    animation: fadeInUp 1s ease-in-out;
+}
+
+.navbar .center-nav a:first-child {
+    color: rgb(255, 140, 0);
+}
+
+.navbar .center-nav a:hover,
+.social a:hover {
+color: rgb(255, 140, 0);
+text-shadow: 0px 0px 30px rgb(255, 140, 0);
+}
+
+/* New styles for underline effect */
+.navbar .center-nav a {
+    position: relative;
+    text-decoration: none;
+}
+
+.navbar .center-nav a::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: rgb(255, 140, 0);
+    visibility: hidden;
+    transform: scaleX(0);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Show underline on hover */
+.navbar .center-nav a:hover::before {
+    visibility: visible;
+    transform: scaleX(1);
+}
+
+.text {
+    position: relative;
+    top: 10rem;
+    left: 11rem;
+    letter-spacing: 1px;
+    animation: fadeInUp 1s ease-in-out;
+}
+
+.text h1 {
+    font-weight: bold;
+    font-size: 4rem;
+    font-family: sans-serif;
+    margin-bottom: 10px;
+    animation: fadeInUp 1s ease-in-out;
+}
+
+.btn {
+    color: white;
+    border: 2px solid;
+    position: relative;
+    top: 3rem;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    border-radius: 6px;
+    transition: all 0.5s ease;
+    margin-right: 10px;
+    animation: fadeInUp 1s ease-in-out 0.5s backwards;
+}
+
+.text .btn:hover {
+    background-color: rgb(255, 140, 0);
+    box-shadow: 0 0 10px 2px rgb(255, 140, 0);
+}
+
+.text p {
+    width: 46%;
+    animation: fadeInUp 1s ease-in-out 1s backwards;
+}
+
+.burger {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    width: 90%;
+    padding: 20px;
+    animation: SlideInFromBottom 1s ease-in-out 1.5s backwards;
+}
+
+.burger img {
+    width: 100px;
+    height: 100px;
+    margin-left: 20px;
+    object-fit: cover;
+    border: 2px solid white;
+    transition: transform 0.3s ease;
+    animation: fadeInUp 1s ease-in-out 2s backwards;
+}
+
+.burger img:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+}
+
+.burger-toggle img {
+    position: absolute;
+    width: 38%;
+    height: 74%;
+    right: 47px;
+    top: 7rem;
+    filter: drop-shadow(63px 0px 392px); /* Fixing space between drop-shadow and parentheses */
+    animation: fadeInUp 1s ease-in-out 2.5s backwards;
+}
+
+.burger,
+.burger-toggle {
+    display: flex;
+}
+
+.burger-toggle img{
+    display: none;
+}
+
+.burger-toggle img.active{
+    display: block;
 }
