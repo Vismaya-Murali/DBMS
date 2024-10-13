@@ -1,22 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - TreatsOnTracks</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+
 <body>
+
+    <div id="stars"></div>
+    <div class="navbar">
+        <img src="image.jpg" alt="">
+        <div class="center-nav">
+            <a href="">Home</a>
+            <a href="">Menu</a>
+            <a href="">About</a>
+            <a href="/select_train">Shop</a>
+        </div>
+        <div class="social">
+            <a href=""><i class="fa-solid fa-magnifying-glass"></i></a>
+            <a href=""><i class="fa-solid fa-cart-plus"></i></a>
+            <a href=""><i class="fa-solid fa-house"></i></a>
+            <a href=""><i class="log">Login</i></a>
+
+        </div>
+    </div>
     <div class="login-container">
-        <h2>Login to TreatsOnTracks</h2>
+        <!-- <h2>Login to TreatsOnTracks</h2> -->
         <form action="/handle_login" method="POST">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
-            <button type="submit">Login</button>
+            <button type="submit" class="logbtn">Login</button>
         </form>
-        <p>Don't have an account? <a href="/register">Register here</a></p>
+        <p>Don't have an account? <a href="/register" class="reg">Register here</a></p>
     </div>
+
+    <script>
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = `${Math.random() * windowWidth}px`;
+                star.style.top = `${Math.random() * windowHeight}px`;
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Call the createStars function when the page loads
+        window.addEventListener('load', createStars);
+    </script>
 </body>
+
 </html>

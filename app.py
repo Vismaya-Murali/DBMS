@@ -43,6 +43,10 @@ def handle_register():
 
     return redirect('/login')
 
+@app.route('/back_to_home')
+def back_to_home():
+    return render_template('/home.html')
+
 @app.route('/handle_login', methods=['POST'])
 def handle_login():
     username = request.form['username']
@@ -87,11 +91,17 @@ def select_station():
     
     return render_template('restaurants.html', station=selected_station, restaurants=restaurants)
 
+# @app.route('/ordering')
+# def ordering():
+#     stations = ['Bangalore', 'Chennai', 'Hyderabad']  # Example station list
+#     return render_template('select_train.html', stations=stations)
+
+
 # Route to show list of stations for selection
 @app.route('/select_train', methods=['POST'])
 def select_train():
-    src = request.form['src']
-    dest = request.form['dest']
+    #src = request.form['src']
+    #dest = request.form['dest']
 
     # Logic to fetch available trains or stations between src and dest (not implemented here)
     
