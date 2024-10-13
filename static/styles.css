@@ -1,65 +1,3 @@
-<<<<<<< HEAD
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f2f2f2;
-    color: #333;
-    margin: 0;
-    padding: 0;
-}
-
-h2 {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.login-container, .main-container {
-    max-width: 400px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-}
-
-label {
-    margin-top: 10px;
-}
-
-input, select {
-    padding: 10px;
-    margin-top: 5px;
-    font-size: 16px;
-}
-
-button {
-    padding: 10px;
-    margin-top: 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-ul li {
-    background-color: #e9ecef;
-    margin-bottom: 5px;
-    padding: 10px;
-}
-=======
 /* @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap'); */
 * {
     /* margin: 0;
@@ -360,4 +298,3 @@ header {
 .reg{
     color: rgb(255, 140, 0);
 }
->>>>>>> 49d5f1a (Initial commit with project files)

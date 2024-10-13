@@ -26,64 +26,39 @@ def register():
 
 @app.route('/handle_register', methods=['POST'])
 def handle_register():
-<<<<<<< HEAD
-    print("Register route accessed")  # Debugging statement
     username = request.form['username']
     password = request.form['password']
     
-    # Insert the user into the database without PassengerID (MySQL handles it)
-=======
-    username = request.form['username']
-    password = request.form['password']
-    
->>>>>>> 49d5f1a (Initial commit with project files)
     cursor = db.cursor()
     try:
         cursor.execute("INSERT INTO Login (LoginID, Password) VALUES (%s, %s)", 
                        (username, password))
         db.commit()
-<<<<<<< HEAD
-        print("User registered successfully")
-    except mysql.connector.Error as err:
-        print(f"Error: {err}")
-        db.rollback()
-        return "Error during registration"  # Return an appropriate message or redirect
-=======
     except mysql.connector.Error as err:
         print(f"Error: {err}")
         db.rollback()
         return "Error during registration"
->>>>>>> 49d5f1a (Initial commit with project files)
     finally:
         cursor.close()
 
     return redirect('/login')
 
-<<<<<<< HEAD
-=======
 @app.route('/back_to_home')
 def back_to_home():
     return render_template('/home.html')
 
->>>>>>> 49d5f1a (Initial commit with project files)
 @app.route('/handle_login', methods=['POST'])
 def handle_login():
     username = request.form['username']
     password = request.form['password']
     
     cursor = db.cursor()
-<<<<<<< HEAD
-    cursor.execute("SELECT * FROM Login WHERE LoginID = %s AND Password = %s", (username, password))
-    user = cursor.fetchone()
-    
-=======
     cursor.execute("SELECT * FROM Login WHERE LoginID = %s AND Password = %s", 
                    (username, password))
     user = cursor.fetchone()
     
     cursor.close()
 
->>>>>>> 49d5f1a (Initial commit with project files)
     if user:
         session['username'] = username
         return redirect('/home')
@@ -96,8 +71,6 @@ def home():
         return render_template('home.html')
     return redirect('/login')
 
-<<<<<<< HEAD
-=======
 # This is the /select_station route to select a station and display restaurants
 @app.route('/select_station', methods=['POST'])
 def select_station():
@@ -142,6 +115,5 @@ def logout():
     session.pop('username', None)
     return redirect('/login')
 
->>>>>>> 49d5f1a (Initial commit with project files)
 if __name__ == '__main__':
     app.run(debug=True)
