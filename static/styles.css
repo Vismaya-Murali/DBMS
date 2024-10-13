@@ -1,4 +1,5 @@
-*{
+/* @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap'); */
+* {
     /* margin: 0;
     padding: 0; */
     text-decoration: none;
@@ -18,7 +19,7 @@ header {
     height: 100vh;
     background-color: transparent;
     animation: fadeIn 1s ease-in-out;
-    }
+}
 
 /*    Add animated stars */
 
@@ -29,17 +30,19 @@ header {
     background-color: #fff;
     animation: twinkle 25 infinite;
     box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes twinkle {
+    0% {
+        opacity: 0.5;
     }
 
-@keyframes twinkle{
-    0% {
-    opacity: 0.5;
-    }
     50% {
-    opacity:1;
+        opacity: 1;
     }
+
     100% {
-    opacity: 0.5;
+        opacity: 0.5;
     }
 }
 
@@ -70,14 +73,22 @@ header {
 
 .navbar .center-nav a:hover,
 .social a:hover {
-color: rgb(255, 140, 0);
-text-shadow: 0px 0px 30px rgb(255, 140, 0);
+    color: rgb(255, 140, 0);
+    text-shadow: 0px 0px 30px rgb(255, 140, 0);
 }
 
 /* New styles for underline effect */
 .navbar .center-nav a {
     position: relative;
     text-decoration: none;
+}
+
+.log {
+    color: white;
+    margin-left: 5px;
+    font-size: 1.3rem;
+    transition: all 0.5s ease;
+    animation: fadeInUp 1s ease-in-out;
 }
 
 .navbar .center-nav a::before {
@@ -117,17 +128,24 @@ text-shadow: 0px 0px 30px rgb(255, 140, 0);
 
 .btn {
     color: white;
-    border: 2px solid;
-    position: relative;
+    background-color: transparent;
+    /* Make it transparent initially */
     top: 3rem;
-    padding-left: 25px;
-    padding-right: 25px;
-    padding-top: 14px;
-    padding-bottom: 14px;
+    border: 2px solid white;
+    /* Button border */
+    padding: 14px 25px;
+    /* Padding around the button */
     border-radius: 6px;
+    /* Rounded corners */
+    position: relative;
     transition: all 0.5s ease;
+    /* Smooth transition */
     margin-right: 10px;
+    /* Space between buttons */
     animation: fadeInUp 1s ease-in-out 0.5s backwards;
+    cursor: pointer;
+    /* Change cursor on hover */
+
 }
 
 .text .btn:hover {
@@ -140,51 +158,143 @@ text-shadow: 0px 0px 30px rgb(255, 140, 0);
     animation: fadeInUp 1s ease-in-out 1s backwards;
 }
 
-.burger {
+.burger-toggle {
     position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    right: 0;
+    transform: translateY(-30%);
     display: flex;
-    width: 90%;
-    padding: 20px;
-    animation: SlideInFromBottom 1s ease-in-out 1.5s backwards;
-}
-
-.burger img {
-    width: 100px;
-    height: 100px;
-    margin-left: 20px;
-    object-fit: cover;
-    border: 2px solid white;
-    transition: transform 0.3s ease;
-    animation: fadeInUp 1s ease-in-out 2s backwards;
-}
-
-.burger img:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
 }
 
 .burger-toggle img {
-    position: absolute;
-    width: 38%;
-    height: 74%;
-    right: 47px;
-    top: 7rem;
-    filter: drop-shadow(63px 0px 392px); /* Fixing space between drop-shadow and parentheses */
-    animation: fadeInUp 1s ease-in-out 2.5s backwards;
-}
-
-.burger,
-.burger-toggle {
-    display: flex;
-}
-
-.burger-toggle img{
     display: none;
 }
 
-.burger-toggle img.active{
+.burger-toggle img.active {
     display: block;
+    width: 100%;
+    height: auto;
+}
+
+.slider {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.text-container {
+    font-family: sans-serif;
+    font-size: 1.5em;
+    align-items: center;
+    width: 80%;
+    position: relative;
+    left: 11rem;
+    top: 4rem;
+    letter-spacing: 1px;
+    animation: fadeInUp 1s ease-in-out;
+}
+
+.moto {
+    font-family: 'Garamond', serif;
+    font-size: 25px;
+    position: relative;
+    right: 20px;
+    text-align: center;
+    padding-top: 2%;
+}
+
+.station-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.station-table th,
+.station-table td {
+    padding: 20px 10px;
+    border: 1px solid #ddd;
+    /* padding: 8px; */
+    text-align: center;
+    cursor: pointer;
+}
+
+.station-table th {
+    background-color: rgba(248, 137, 1, 0.783);
+    font-weight: bold;
+    transition: box-shadow 0.3s ease-in-out;
+    box-shadow: 0 0 10px 2px rgba(255, 140, 0, 0.6);
+}
+
+.station-row:hover {
+    background-color: rgb(255, 140, 0);
+    box-shadow: 0 0 10px 2px rgb(255, 140, 0);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.selected {
+    background-color: #90EE90;
+    /* Light green to indicate selected row */
+    color: #fff;
+    font-weight: bold;
+}
+
+.station-row {
+    box-shadow: 0 0 10px 2px rgba(255, 140, 0, 0.6);
+    /* Add the box shadow */
+    transition: box-shadow 0.3s ease-in-out;
+    /* Smooth transition for hover effects */
+}
+
+.text-container .btn:hover {
+    background-color: rgb(255, 140, 0);
+    box-shadow: 0 0 10px 2px rgb(255, 140, 0);
+}
+
+.login-container {
+    position: relative;
+    height: 100vh;
+    background-color: transparent;
+    
+    /* Full height of the viewport */
+}
+
+.login-container form {
+    position: absolute; /* Allows free positioning */
+    top: 50%; /* Adjust based on where you want the form */
+    left: 50%; /* Adjust based on where you want the form */
+    transform: translate(-54%, -50%); /* This centers the form relative to its position */
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Keep elements centered horizontally */
+    
+    padding: 100px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: transparent;
+    width: 300px;
+    box-shadow: 0 0 10px 2px rgb(255, 140, 0);
+
+}
+.login-container form label{
+    margin-bottom: 25px;
+    font-size: 2rem;
+}
+.login-container form input{
+    margin-bottom: 25px;
+    height: 100%;
+    font-size: 2rem;
+}
+.logbtn{
+    margin-top: 20px;
+    font-size: 2rem;
+    font-family: 'Times New Roman', Times, serif;
+}
+.login-container p{
+    position: relative;
+    top: 70%;
+    left: 43%;
+}
+.reg{
+    color: rgb(255, 140, 0);
 }

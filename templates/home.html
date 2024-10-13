@@ -6,64 +6,66 @@
     <title>Home - Select Train</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
 </head>
+
 <body>
-        <header>
+    <header>
         <div id="stars"></div>
         <div class="navbar">
-        <img src="logo.png" alt="">
-        <div class="center-nav">
-        <a href="">Home</a>
-        <a href="">Menu</a>
-        <a href="">About</a>
-        <a href="">Shop</a>
-        </div>
-        <div class="social">
-        <a href=""><i class="fa-solid fa-magnifying-glass"></i></a>
-        <a href=""><i class="fa-solid fa-cart-plus"></i></a>
-        <a href=""><i class="fa-solid fa-house"></i></a>
-        </div>
+            <img src="image.jpg" alt="">
+            <div class="center-nav">
+                <a href="">Home</a>
+                <a href="">Menu</a>
+                <a href="">About</a>
+                <a href="/select_train">Shop</a>
+            </div>
+            <div class="social">
+                <a href=""><i class="fa-solid fa-magnifying-glass"></i></a>
+                <a href=""><i class="fa-solid fa-cart-plus"></i></a>
+                <a href=""><i class="fa-solid fa-house"></i></a>
+            </div>
         </div>
         <div class="text">
-        <h1>THE ULTIMATE <br> BURGER HAUEM</h1>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente pariatur obcaecati at ab saepe, cum omnis neque est cupiditate.
-        <a href="" class="btn">Order Now</a>
-        <a href="" class="btn">View more</a>
-        </div>
-    </div>
-    <div class="burger">
-        <img src="static/images/burger.png" alt="">
-        <img src="static/images/pngwing.com (12).png" alt="">
-        <img src="static/images/buger2.png" alt="">
-        <img src="static/images/Flying Burger PNG Image - 2084x2084.png" alt=""> -
-        <img src="static/images/pngwing.com (13).png" alt="">
+            <h1>THE ULTIMATE <br> BURGER HAUEM</h1>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente pariatur obcaecati at ab saepe, cum
+                omnis neque est cupiditate.</p>
+            <a href="javascript:void(0);" class="btn" onclick="submitOrderForm()">Order Now</a> 
+            <form id="orderForm" action="/select_train" method="POST" style="display: none;">
+            </form>
+            <a href="" class="btn">View more</a>
         </div>
         <div class="burger-toggle">
-        <img src="static/images/Flying Burger PNG Image - 2084x2084.png" alt="" class="active"> -
+            <div class="slider">
+                <img src="static/images/Flying Burger PNG Image - 2084x2084.png" alt="" class="active">
+                <img src="static/images/pngwing.com (12).png" alt="">
+                <img src="static/images/buger2.png" alt="">
+                <img src="static/images/Flying Burger PNG Image - 2084x2084.png" alt="">
+                <img src="static/images/pngwing.com (13).png" alt="">
+            </div>
         </div>
     </header>
     <script>
-        const burgerImages = document.querySelectorAll('.burger img');
-        const toggleImages = document.querySelectorAll('.burger-toggle img');
-        let currentIndex = 0;
-        toggleImages[currentIndex].classList.add('active');
-        
-        burgerImages.forEach((img, index) => {
-            img.addEventListener('click', () => {
-                toggleImages.forEach(toggleImg => toggleImg.classList.remove('active'));
-                toggleImages[currentIndex].classList.add('active');
-                toggleImages[currentIndex].src = burgerImages[index].src;
-                currentIndex = (currentIndex + 1) % toggleImages.length;
-            });
-        });
-    
+        function submitOrderForm() {
+            document.getElementById('orderForm').submit();
+        }
+        let index = 0;
+        const images = document.querySelectorAll('.burger-toggle .slider img');
+        const totalImages = images.length;
+
+        function showNextImage() {
+            images[index].classList.remove('active');
+            index = (index + 1) % totalImages;
+            images[index].classList.add('active');
+        }
+
+        setInterval(showNextImage, 5000);
+
         // Generate random stars
         function createStars() {
             const starsContainer = document.getElementById('stars');
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
-            
+
             for (let i = 0; i < 100; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
@@ -72,11 +74,9 @@
                 starsContainer.appendChild(star);
             }
         }
-    
+
         // Call the createStars function when the page loads
         window.addEventListener('load', createStars);
     </script>
-    
-       
 </body>
 </html>
