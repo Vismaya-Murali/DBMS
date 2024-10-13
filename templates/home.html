@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Select Train</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<<<<<<< HEAD
 </head>
 <body>
     <div class="main-container">
@@ -19,3 +20,80 @@
     </div>
 </body>
 </html>
+=======
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <header>
+        <div id="stars"></div>
+        <div class="navbar">
+            <img src="image.jpg" alt="">
+            <div class="center-nav">
+                <a href="">Home</a>
+                <a href="">Menu</a>
+                <a href="">About</a>
+                <a href="/select_train">Shop</a>
+            </div>
+            <div class="social">
+                <a href=""><i class="fa-solid fa-magnifying-glass"></i></a>
+                <a href=""><i class="fa-solid fa-cart-plus"></i></a>
+                <a href=""><i class="fa-solid fa-house"></i></a>
+            </div>
+        </div>
+        <div class="text">
+            <h1>THE ULTIMATE <br> BURGER HAUEM</h1>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente pariatur obcaecati at ab saepe, cum
+                omnis neque est cupiditate.</p>
+            <a href="javascript:void(0);" class="btn" onclick="submitOrderForm()">Order Now</a> 
+            <form id="orderForm" action="/select_train" method="POST" style="display: none;">
+            </form>
+            <a href="" class="btn">View more</a>
+        </div>
+        <div class="burger-toggle">
+            <div class="slider">
+                <img src="static/images/Flying Burger PNG Image - 2084x2084.png" alt="" class="active">
+                <img src="static/images/pngwing.com (12).png" alt="">
+                <img src="static/images/buger2.png" alt="">
+                <img src="static/images/Flying Burger PNG Image - 2084x2084.png" alt="">
+                <img src="static/images/pngwing.com (13).png" alt="">
+            </div>
+        </div>
+    </header>
+    <script>
+        function submitOrderForm() {
+            document.getElementById('orderForm').submit();
+        }
+        let index = 0;
+        const images = document.querySelectorAll('.burger-toggle .slider img');
+        const totalImages = images.length;
+
+        function showNextImage() {
+            images[index].classList.remove('active');
+            index = (index + 1) % totalImages;
+            images[index].classList.add('active');
+        }
+
+        setInterval(showNextImage, 5000);
+
+        // Generate random stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = `${Math.random() * windowWidth}px`;
+                star.style.top = `${Math.random() * windowHeight}px`;
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Call the createStars function when the page loads
+        window.addEventListener('load', createStars);
+    </script>
+</body>
+</html>
+>>>>>>> 49d5f1a (Initial commit with project files)
