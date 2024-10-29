@@ -71,30 +71,27 @@ def home():
         return render_template('home.html')
     return redirect('/login')
 
-# This is the /select_station route to select a station and display restaurants
+
 @app.route('/select_station', methods=['POST'])
 def select_station():
-    selected_station = request.form['station']
-    
+    train_id = request.form.get('train_id')
+
     cursor = db.cursor()
+    
+    # Query to fetch all stops for the selected train
     query = """
-        SELECT Rname, Location, Phno 
-        FROM Restaurant 
-        WHERE Station_id = (
-            SELECT StationID FROM Station WHERE Sname = %s
-        )
+        SELECT s.Station_id, st.Sname 
+        FROM stops s 
+        JOIN Station st ON s.Station_id = st.StationID
+        WHERE s.Train_id = %s
     """
-    cursor.execute(query, (selected_station,))
-    restaurants = cursor.fetchall()
+    cursor.execute(query, (train_id,))
+    stops = cursor.fetchall()  # Fetch all stops for the train
     
     cursor.close()
     
-    return render_template('restaurants.html', station=selected_station, restaurants=restaurants)
-
-# @app.route('/ordering')
-# def ordering():
-#     stations = ['Bangalore', 'Chennai', 'Hyderabad']  # Example station list
-#     return render_template('select_train.html', stations=stations)
+    # Pass the stops and train_id to the template for rendering
+    return render_template('stops.html', train_id=train_id, stops=stops)
 
 
 # Route to show list of stations for selection
@@ -108,6 +105,44 @@ def select_train():
     # Assuming it will render a template that lists stations to choose for food delivery
     stations = ['Bangalore', 'Chennai', 'Hyderabad']  # Example station list
     return render_template('select_train.html', stations=stations)
+
+
+@app.route('/select_stops', methods=['POST'])
+def select_stops():
+    cursor = db.cursor()
+    
+    # Query to select all trains from the Train table
+    query = "SELECT TrainID, TrainName FROM train"
+    cursor.execute(query)
+    trains = cursor.fetchall()  # Fetch all train data
+    
+    cursor.close()
+    
+    # Render the template with the train data
+    return render_template('train_stops.html', trains=trains)
+
+
+@app.route('/restaurants_at_station', methods=['POST'])
+def restaurants_at_station():
+    # Get the selected station ID from the form
+    selected_station_id = request.form['station_id']
+
+    cursor = db.cursor()
+
+    # Query to fetch restaurants at the selected station based on station ID
+    query = """
+        SELECT Rname, Location, Phno 
+        FROM Restaurant 
+        WHERE Station_id = %s
+    """
+    cursor.execute(query, (selected_station_id,))
+    restaurants = cursor.fetchall()
+
+    cursor.close()
+
+    # Render the restaurants template with the station name and list of restaurants
+    return render_template('restaurants.html', station_id=selected_station_id, restaurants=restaurants)
+
 
 # Logout route
 @app.route('/logout')

@@ -7,13 +7,58 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="main-container">
-        <h2>Available Restaurants at {{ station }}</h2>
-        <ul>
-            {% for restaurant in restaurants %}
-                <li>{{ restaurant[0] }} -  Phone: {{ restaurant[2] }}</li>
-            {% endfor %}
-        </ul>
+    <div id="stars"></div>
+        <div class="navbar">
+            <img src="image.jpg" alt="">
+            <div class="center-nav">
+                <a href="">Home</a>
+                <a href="">Menu</a>
+                <a href="">About</a>
+                <a href="/select_train">Shop</a>
+            </div>
+            <div class="social">
+                <a href=""><i class="fa-solid fa-magnifying-glass"></i></a>
+                <a href=""><i class="fa-solid fa-cart-plus"></i></a>
+                <a href=""><i class="fa-solid fa-house"></i></a>
+            </div>
+        </div>
     </div>
+    <div class="main-container-restaurant">
+        <h2>Available Restaurants at {{ station }}</h2>
+        <table class="restaurant-table">
+            <thead>
+                <tr>
+                    <th>Restaurant Name</th>
+                    <th>Phone Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for restaurant in restaurants %}
+                <tr>
+                    <td>{{ restaurant[0] }}</td>
+                    <td>{{ restaurant[2] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+          function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = `${Math.random() * windowWidth}px`;
+                star.style.top = `${Math.random() * windowHeight}px`;
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Call the createStars function when the page loads
+        window.addEventListener('load', createStars);
+    </script>
 </body>
 </html>

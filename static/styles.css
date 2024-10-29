@@ -252,8 +252,7 @@ header {
 .login-container {
     position: relative;
     height: 100vh;
-    background-color: transparent;
-    
+    background-color: transparent;    
     /* Full height of the viewport */
 }
 
@@ -295,6 +294,56 @@ header {
     top: 70%;
     left: 43%;
 }
-.reg{
+.login-container .reg{
     color: rgb(255, 140, 0);
+} 
+
+/* Basic styling for the table  */
+ .restaurant-table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+}
+
+.restaurant-table th, .restaurant-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.restaurant-table th {
+    background-color: rgb(255, 140, 0);
+    color: white;
+    font-size: 1.2em;
+}
+
+.restaurant-table tr:nth-child(even) {
+    background-color: transparent;
+}
+
+.restaurant-table tr:hover {
+    background-color: rgb(255, 140, 0);
+    box-shadow: 0 0 10px 2px rgb(255, 140, 0);
+}
+
+.restaurant-table td {
+    font-size: 1em;
+}
+
+/* Centering the heading and container */
+h2 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.main-container-restaurant {
+    text-align: center;
+}
+
+.station-table tr:hover {
+    background-color: rgb(255, 140, 0); /* Bright orange background on hover */
+    color: white; /* Change text color to white for contrast */
+    box-shadow: 0 0 10px 2px rgb(255, 140, 0); /* Optional: add a shadow effect */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for color change */
 }
