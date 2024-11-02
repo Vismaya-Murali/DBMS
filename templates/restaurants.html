@@ -3,28 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurants at {{ station }}</title>
+    <title>Restaurants at {{ station_id }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div id="stars"></div>
-        <div class="navbar">
-            <img src="image.jpg" alt="">
-            <div class="center-nav">
-                <a href="">Home</a>
-                <a href="">Menu</a>
-                <a href="">About</a>
-                <a href="/select_train">Shop</a>
-            </div>
-            <div class="social">
-                <a href=""><i class="fa-solid fa-magnifying-glass"></i></a>
-                <a href=""><i class="fa-solid fa-cart-plus"></i></a>
-                <a href=""><i class="fa-solid fa-house"></i></a>
-            </div>
+    <div class="navbar">
+        <img src="image.jpg" alt="">
+        <div class="center-nav">
+            <a href="">Home</a>
+            <a href="">Menu</a>
+            <a href="">About</a>
+            <a href="/select_train">Shop</a>
+        </div>
+        <div class="social">
+            <a href=""><i class="fa-solid fa-magnifying-glass"></i></a>
+            <a href=""><i class="fa-solid fa-cart-plus"></i></a>
+            <a href=""><i class="fa-solid fa-house"></i></a>
         </div>
     </div>
     <div class="main-container-restaurant">
-        <h2>Available Restaurants at {{ station }}</h2>
+        <h2>Available Restaurants at {{ station_id }}</h2>
         <table class="restaurant-table">
             <thead>
                 <tr>
@@ -35,7 +34,7 @@
             <tbody>
                 {% for restaurant in restaurants %}
                 <tr>
-                    <td>{{ restaurant[0] }}</td>
+                    <td><a href="{{ url_for('menu', restaurant_id=restaurant[1]) }}">{{ restaurant[0] }}</a></td>
                     <td>{{ restaurant[2] }}</td>
                 </tr>
                 {% endfor %}
@@ -43,7 +42,7 @@
         </table>
     </div>
     <script>
-          function createStars() {
+        function createStars() {
             const starsContainer = document.getElementById('stars');
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
