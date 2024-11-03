@@ -128,9 +128,9 @@ def restaurants_at_station():
     db = get_db_connection()
     cursor = db.cursor()
 
-    # Query to fetch restaurants at the selected station based on station ID
+    # Update the query to include the phone number column
     query = """
-        SELECT Rname, RID 
+        SELECT Rname, RID, Phno 
         FROM restaurant 
         WHERE Station_id = %s
     """
@@ -140,7 +140,7 @@ def restaurants_at_station():
     cursor.close()
     db.close()
 
-    # Render the restaurants template with the station name and list of restaurants
+    # Render the template with the updated restaurants data
     return render_template('restaurants.html', station_id=selected_station_id, restaurants=restaurants)
 
 @app.route('/menu/<restaurant_id>', methods=['GET', 'POST'])
