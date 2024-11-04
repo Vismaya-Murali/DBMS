@@ -9,33 +9,69 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background: #f4f4f4;
+            background-color: #f4f4f4;
         }
         .navbar {
-            background: #333;
+            background-color: #333;
             color: #fff;
-            padding: 10px;
+            padding: 15px;
             text-align: center;
+            font-size: 1.5em;
         }
         .status-container {
-            max-width: 800px;
+            max-width: 400px;
             margin: 20px auto;
-            background: white;
+            background-color: #fff;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            color: #333;
+            line-height: 1.6;
+        }
+        h2 {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        p, li {
+            color: #555;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 5px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        li:last-child {
+            border-bottom: none;
+        }
+        .order-id, .total-amount {
+            font-weight: bold;
+            color: #333;
+        }
+        .back-to-menu {
+            display: inline-block;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+        }
+        .back-to-menu:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <h1>Order Status</h1>
+        Order Status
     </div>
     <div class="status-container">
         {% if order_id %}
             <h2>Your order has been placed successfully!</h2>
-            <p><strong>Order ID:</strong> {{ order_id }}</p>
-            <p><strong>Total Amount:</strong> ${{ total_amount }}</p>
+            <p class="order-id"><strong>Order ID:</strong> {{ order_id }}</p>
+            <p class="total-amount"><strong>Total Amount:</strong> ${{ total_amount }}</p>
             <h3>Order Details:</h3>
             <ul>
                 {% for item in order_items %}
@@ -46,7 +82,7 @@
             <h2>Your order has been placed successfully!</h2>
             <p>Thank you for ordering from us.</p>
         {% endif %}
-        <a href="/menu/{{ restaurant_id }}">Back to Menu</a> <!-- Use dynamic restaurant ID -->
+        <a href="/menu/{{ restaurant_id }}" class="back-to-menu">Back to Menu</a>
     </div>
 </body>
 </html>
