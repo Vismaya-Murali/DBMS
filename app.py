@@ -98,10 +98,9 @@ def select_station():
     # Pass the stops and train_id to the template for rendering
     return render_template('stops.html', train_id=train_id, stops=stops)
 
-# Route to show list of stations for selection
 @app.route('/select_train', methods=['POST'])
 def select_train():
-    # Assuming it will render a template that lists stations to choose for food delivery
+    # Render a template that lists stations to choose for food delivery
     stations = ['Bangalore', 'Chennai', 'Hyderabad']  # Example station list
     return render_template('select_train.html', stations=stations)
 
@@ -128,19 +127,26 @@ def restaurants_at_station():
     db = get_db_connection()
     cursor = db.cursor()
 
-    # Query to fetch restaurants at the selected station based on station ID
+    # Update the query to include the phone number column
     query = """
-        SELECT Rname, RID 
+        SELECT Rname, RID, Phno 
         FROM restaurant 
         WHERE Station_id = %s
     """
     cursor.execute(query, (selected_station_id,))
     restaurants = cursor.fetchall()
 
+    # Store the first restaurant and the selected station ID in the session
+    # Store the first restaurant and the selected station ID in the session
+    if restaurants:  # Check if there are any restaurants available
+        session['RID'] = restaurants[0][1]  # Store the restaurant ID
+        session['StationID'] = selected_station_id  # Store the selected station ID
+
+
     cursor.close()
     db.close()
 
-    # Render the restaurants template with the station name and list of restaurants
+    # Render the template with the updated restaurants data
     return render_template('restaurants.html', station_id=selected_station_id, restaurants=restaurants)
 
 @app.route('/menu/<restaurant_id>', methods=['GET', 'POST'])
@@ -179,12 +185,23 @@ def place_order():
     db = get_db_connection()
     cursor = db.cursor()
 
-    restaurant_id = request.form.get('RID')
-    passenger_id = session.get('passenger_id')  # Get Passenger_id from session
-    station_id = request.form.get('station_id')
+    # Print session data for debugging
+    print("Session Data:", session)
 
+    # Get IDs from the session
+    restaurant_id = session.get('RID')  # Get Restaurant ID from session
+    station_id = session.get('StationID')  # Get Station ID from session
+
+    # Ensure we have all necessary IDs
+    if not restaurant_id or not station_id:
+        return "Error: Missing required information.", 400
+
+    # Attempt to get a delivery person ID
     cursor.execute("SELECT DPID FROM deliveryperson LIMIT 1")
-    dp_id = cursor.fetchone()[0]
+    dp_id = cursor.fetchone()
+    if dp_id is None:
+        return "Error: No delivery person available.", 400
+    dp_id = dp_id[0]  # Get the actual ID
 
     order_items = []
     for key, value in request.form.items():
@@ -203,14 +220,19 @@ def place_order():
 
         for item in order_items:
             cursor.execute("SELECT Price, ItemID FROM menu WHERE Item_name = %s", (item['item_name'],))
-            price, item_id = cursor.fetchone()
+            item_data = cursor.fetchone()
+            if item_data is None:
+                return f"Error: Item {item['item_name']} not found in menu.", 404
+            
+            price, item_id = item_data
             total_amount += price * item['quantity']
             item['item_id'] = item_id
             item['price'] = price
 
+        # Insert the order with the correct IDs
         cursor.execute(
-            "INSERT INTO orders (OrderID, Order_date, Passenger_id, DP_ID, R_ID, S_ID) VALUES (%s, %s, %s, %s, %s, %s)",
-            (order_id, order_date, passenger_id, dp_id, restaurant_id, station_id)
+            "INSERT INTO orders (OrderID, Order_date, DP_ID, R_ID, S_ID) VALUES (%s, %s, %s, %s, %s)",
+            (order_id, order_date, dp_id, restaurant_id, station_id)
         )
 
         for item in order_items:
@@ -223,8 +245,8 @@ def place_order():
         db.commit()
     except Exception as e:
         db.rollback()
-        print("Error placing order:", e)
-        return "Error placing order"
+        print("Error placing order:", e)  # Log the error message to the console
+        return "Error placing order", 500
     finally:
         cursor.close()
         db.close()
@@ -251,6 +273,7 @@ def order_success():
 @app.route('/logout')
 def logout():
     session.pop('username', None)
+    session.pop('RID', None)  # Clear RID from session on logout
     return redirect('/login')
 
 if __name__ == '__main__':

@@ -331,6 +331,17 @@ header {
     font-size: 1em;
 }
 
+.restaurant-table a {
+    color: white;         /* Set text color to white */
+    text-decoration: none; /* Remove underline */
+}
+
+/* Prevent link from changing color after being clicked */
+.restaurant-table a:visited {
+    color: white;          /* Ensure the link color stays white even after being clicked */
+}
+
+
 /* Centering the heading and container */
 h2 {
     text-align: center;
