@@ -40,28 +40,28 @@ def handle_register():
     password = request.form['password']
     first_name = request.form['fname']
     last_name = request.form['lname']
-    pnr = request.form['pnr']
     coach_number = request.form['coach_no']
     phone_number = request.form['phone']
     email = request.form['email']
     
-    # Generate a random PassengerID
     passenger_id = generate_passenger_id()
 
     db = get_db_connection()
     cursor = db.cursor()
     try:
         cursor.execute(
-            "INSERT INTO passenger(PassengerID, PNR, coach_no, Fname, Lname, Phone, email) VALUES (%s, %s, %s, %s, %s, %s, %s)", 
-            (passenger_id, pnr, coach_number, first_name, last_name, phone_number, email)
+            "INSERT INTO passenger(PassengerID, coach_no, Fname, Lname, Phone, email) VALUES (%s, %s, %s, %s, %s, %s)", 
+            (passenger_id, coach_number, first_name, last_name, phone_number, email)
         )
 
-        # Insert into Login table
         cursor.execute(
             "INSERT INTO Login (LoginID, Password, pas_id) VALUES (%s, %s, %s)", 
             (username, password, passenger_id)
         )
         db.commit()
+        
+        # Store PassengerID in the session
+        session['passenger_id'] = passenger_id
     except mysql.connector.Error as err:
         print(f"Error: {err}")
         db.rollback()
@@ -79,7 +79,9 @@ def handle_login():
     
     db = get_db_connection()
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM Login WHERE LoginID = %s AND Password = %s", 
+    
+    # Fetch user details including PassengerID
+    cursor.execute("SELECT pas_id FROM Login WHERE LoginID = %s AND Password = %s", 
                    (username, password))
     user = cursor.fetchone()
     
@@ -88,6 +90,7 @@ def handle_login():
 
     if user:
         session['username'] = username
+        session['passenger_id'] = user[0]  # Store PassengerID in the session
         return redirect('/home')
     else:
         return "Invalid credentials, try again."
@@ -105,7 +108,6 @@ def select_station():
     db = get_db_connection()
     cursor = db.cursor()
     
-    # Query to fetch all stops for the selected train
     query = """
         SELECT s.Station_id, st.Sname 
         FROM stops s 
@@ -113,18 +115,16 @@ def select_station():
         WHERE s.Train_id = %s
     """
     cursor.execute(query, (train_id,))
-    stops = cursor.fetchall()  # Fetch all stops for the train
+    stops = cursor.fetchall()
     
     cursor.close()
     db.close()
     
-    # Pass the stops and train_id to the template for rendering
     return render_template('stops.html', train_id=train_id, stops=stops)
 
 @app.route('/select_train', methods=['POST'])
 def select_train():
-    # Render a template that lists stations to choose for food delivery
-    stations = ['Bangalore', 'Chennai', 'Hyderabad']  # Example station list
+    stations = ['Bangalore', 'Chennai', 'Hyderabad']
     return render_template('select_train.html', stations=stations)
 
 @app.route('/select_stops', methods=['POST'])
@@ -132,15 +132,13 @@ def select_stops():
     db = get_db_connection()
     cursor = db.cursor()
     
-    # Query to select all trains from the Train table
     query = "SELECT TrainID, TrainName FROM train"
     cursor.execute(query)
-    trains = cursor.fetchall()  # Fetch all train data
+    trains = cursor.fetchall()
     
     cursor.close()
     db.close()
     
-    # Render the template with the train data
     return render_template('train_stops.html', trains=trains)
 
 @app.route('/restaurants_at_station', methods=['POST'])
@@ -150,7 +148,6 @@ def restaurants_at_station():
     db = get_db_connection()
     cursor = db.cursor()
 
-    # Update the query to include the phone number column
     query = """
         SELECT Rname, RID, Phno 
         FROM restaurant 
@@ -159,18 +156,22 @@ def restaurants_at_station():
     cursor.execute(query, (selected_station_id,))
     restaurants = cursor.fetchall()
 
-    # Store the first restaurant and the selected station ID in the session
-    # Store the first restaurant and the selected station ID in the session
-    if restaurants:  # Check if there are any restaurants available
-        session['RID'] = restaurants[0][1]  # Store the restaurant ID
-        session['StationID'] = selected_station_id  # Store the selected station ID
-
+    if restaurants:
+        session['StationID'] = selected_station_id
 
     cursor.close()
     db.close()
 
-    # Render the template with the updated restaurants data
     return render_template('restaurants.html', station_id=selected_station_id, restaurants=restaurants)
+
+@app.route('/select_restaurant', methods=['POST'])
+def select_restaurant():
+    restaurant_id = request.form.get('restaurant_id')
+    if not restaurant_id:
+        return "Error: No restaurant selected.", 400
+    
+    session['RID'] = restaurant_id
+    return redirect(url_for('menu', restaurant_id=restaurant_id))
 
 @app.route('/menu/<restaurant_id>', methods=['GET', 'POST'])
 def menu(restaurant_id):
@@ -208,30 +209,26 @@ def place_order():
     db = get_db_connection()
     cursor = db.cursor()
 
-    # Print session data for debugging
-    print("Session Data:", session)
+    passenger_id = session.get('passenger_id')  # Retrieve PassengerID from session
+    restaurant_id = session.get('RID')
+    station_id = session.get('StationID')
 
-    # Get IDs from the session
-    restaurant_id = session.get('RID')  # Get Restaurant ID from session
-    station_id = session.get('StationID')  # Get Station ID from session
-
-    # Ensure we have all necessary IDs
-    if not restaurant_id or not station_id:
+    if not passenger_id or not restaurant_id or not station_id:
         return "Error: Missing required information.", 400
 
-    # Attempt to get a delivery person ID
+    # Find an available delivery person
     cursor.execute("SELECT DPID FROM deliveryperson LIMIT 1")
     dp_id = cursor.fetchone()
     if dp_id is None:
         return "Error: No delivery person available.", 400
-    dp_id = dp_id[0]  # Get the actual ID
+    dp_id = dp_id[0]
 
+    # Get order items from form data
     order_items = []
     for key, value in request.form.items():
         if key.startswith('quantity_') and int(value) > 0:
             item_name = key.split('quantity_')[1]
-            quantity = int(value)
-            order_items.append({'item_name': item_name, 'quantity': quantity})
+            order_items.append({'item_name': item_name, 'quantity': int(value)})
 
     if not order_items:
         return redirect(url_for('menu', restaurant_id=restaurant_id, error="No items selected"))
@@ -241,6 +238,7 @@ def place_order():
         order_date = datetime.now().date()
         total_amount = 0
 
+        # Calculate total price and gather item details
         for item in order_items:
             cursor.execute("SELECT Price, ItemID FROM menu WHERE Item_name = %s", (item['item_name'],))
             item_data = cursor.fetchone()
@@ -252,12 +250,13 @@ def place_order():
             item['item_id'] = item_id
             item['price'] = price
 
-        # Insert the order with the correct IDs
+        # Insert the order with the correct Passenger_id
         cursor.execute(
-            "INSERT INTO orders (OrderID, Order_date, DP_ID, R_ID, S_ID) VALUES (%s, %s, %s, %s, %s)",
-            (order_id, order_date, dp_id, restaurant_id, station_id)
+            "INSERT INTO orders (OrderID, Order_date, DP_ID, R_ID, S_ID, Passenger_id) VALUES (%s, %s, %s, %s, %s, %s)",
+            (order_id, order_date, dp_id, restaurant_id, station_id, passenger_id)  # Use Passenger_id here
         )
 
+        # Insert each item in the order
         for item in order_items:
             order_item_id = str(uuid.uuid4())[:8]
             cursor.execute(
@@ -268,36 +267,24 @@ def place_order():
         db.commit()
     except Exception as e:
         db.rollback()
-        print("Error placing order:", e)  # Log the error message to the console
+        print("Error placing order:", e)
         return "Error placing order", 500
     finally:
         cursor.close()
         db.close()
+    return render_template('order_success.html', order_id=order_id, total_amount=total_amount)
 
-    return render_template('order_success.html', order_id=order_id, total_amount=total_amount, order_items=order_items)
 
-
-@app.route('/cart', methods=['GET', 'POST'])
+@app.route('/cart')
 def cart():
-    if request.method == 'POST':
-        # Place an order
-        return redirect('/place_order')  # Redirect to place order
-
-    # Access the cart stored in the session
     cart_items = session.get('cart', [])
-    total_price = sum(item['price'] for item in cart_items)
-    return render_template('cart.html', cart_items=cart_items, total_price=total_price)
+    total_amount = sum(item['price'] for item in cart_items)
+    return render_template('cart.html', cart_items=cart_items, total_amount=total_amount)
 
-@app.route('/order_success')
-def order_success():
-    return render_template('order_success.html')
-
-# Logout route
 @app.route('/logout')
 def logout():
-    session.pop('username', None)
-    session.pop('RID', None)  # Clear RID from session on logout
-    return redirect('/login')
+    session.clear()
+    return redirect('/')
 
 if __name__ == '__main__':
     app.run(debug=True)

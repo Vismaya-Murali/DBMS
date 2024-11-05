@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restaurants at {{ station_id }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
+
 <body>
     <div id="stars"></div>
     <div class="navbar">
@@ -22,26 +24,32 @@
             <a href=""><i class="fa-solid fa-house"></i></a>
         </div>
     </div>
+
+    <!-- Restaurant selection form -->
     <div class="main-container-restaurant">
         <h2>Available Restaurants at {{ station_id }}</h2>
-        <table class="restaurant-table">
-            <thead>
-                <tr>
-                    <th>Restaurant Name</th>
-                    <th>Phone Number</th>
-                </tr>
-            </thead>
-            
-            <tbody>
-                {% for restaurant in restaurants %}
-                <tr>
-                    <td><a href="{{ url_for('menu', restaurant_id=restaurant[1]) }}">{{ restaurant[0] }}</a></td>
-                    <td>{{ restaurant[2] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <form id="restaurantForm" action="{{ url_for('select_restaurant') }}" method="POST">
+            <!-- Hidden input to store selected restaurant ID -->
+            <input type="hidden" name="restaurant_id" id="restaurantIdInput">
+            <table class="restaurant-table">
+                <thead>
+                    <tr>
+                        <th>Restaurant Name</th>
+                        <th>Phone Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for restaurant in restaurants %}
+                    <tr class="clickable-row" data-restaurant-id="{{ restaurant[1] }}">
+                        <td>{{ restaurant[0] }}</td>
+                        <td>{{ restaurant[2] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
     </div>
+
     <script>
         function createStars() {
             const starsContainer = document.getElementById('stars');
@@ -59,6 +67,16 @@
 
         // Call the createStars function when the page loads
         window.addEventListener('load', createStars);
+
+        // Add click event to each restaurant row
+        document.querySelectorAll('.clickable-row').forEach(row => {
+            row.addEventListener('click', () => {
+                const restaurantId = row.getAttribute('data-restaurant-id');
+                document.getElementById('restaurantIdInput').value = restaurantId;
+                document.getElementById('restaurantForm').submit();
+            });
+        });
     </script>
 </body>
+
 </html>
