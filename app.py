@@ -265,6 +265,10 @@ def place_order():
             )
 
         db.commit()
+
+        # Redirect to payment selection
+        return redirect(url_for('payment_selection', order_id=order_id, total_amount=total_amount))
+
     except Exception as e:
         db.rollback()
         print("Error placing order:", e)
@@ -272,8 +276,40 @@ def place_order():
     finally:
         cursor.close()
         db.close()
-    return render_template('order_success.html', order_id=order_id, total_amount=total_amount)
 
+@app.route('/payment_selection/<order_id>/<float:total_amount>', methods=['GET'])
+def payment_selection(order_id, total_amount):
+    return render_template('payment_selection.html', order_id=order_id, total_amount=total_amount)
+
+@app.route('/confirm_payment', methods=['POST'])
+def confirm_payment():
+    order_id = request.form.get('order_id')
+    payment_method = request.form.get('payment_method')
+    
+    if not order_id or not payment_method:
+        return "Error: Missing order ID or payment method.", 400
+
+    db = get_db_connection()
+    cursor = db.cursor()
+    
+    payment_id = str(uuid.uuid4())[:8]  # Generate a unique payment ID
+    payment_date = datetime.now().date()
+
+    try:
+        cursor.execute(
+            "INSERT INTO payment (order_id, paymentID, payment_method, date) VALUES (%s, %s, %s, %s)",
+            (order_id, payment_id, payment_method, payment_date)
+        )
+        db.commit()
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        db.rollback()
+        return "Error processing payment", 500
+    finally:
+        cursor.close()
+        db.close()
+
+    return render_template('payment_success.html', order_id=order_id, payment_method=payment_method)
 
 @app.route('/cart')
 def cart():

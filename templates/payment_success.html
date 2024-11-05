@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Success</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .navbar {
+            background-color: #333;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+        .status-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            color: #333;
+            line-height: 1.6;
+        }
+        h2 {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        p, li {
+            color: #555;
+        }
+        .order-id, .total-amount {
+            font-weight: bold;
+            color: #333;
+        }
+        .back-to-menu {
+            display: inline-block;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+        }
+        .back-to-menu:hover {
+            text-decoration: underline;
+        }
+        .alert {
+            color: #e74c3c;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">Payment Successful</div>
+    <div class="status-container">
+        <h2>Payment Successful!</h2>
+        <p>Your order ID: <span class="order-id">{{ order_id }}</span></p>
+        <p>Payment Method: <span class="total-amount">{{ payment_method }}</span></p>
+        <a class="back-to-menu" href="{{ url_for('home') }}">Back to Home</a>
+    </div>
+</body>
+</html>

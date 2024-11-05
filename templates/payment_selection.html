@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Selection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .navbar {
+            background-color: #333;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+        .status-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            color: #333;
+            line-height: 1.6;
+        }
+        h2 {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        p, li {
+            color: #555;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            padding: 5px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        li:last-child {
+            border-bottom: none;
+        }
+        .order-id, .total-amount {
+            font-weight: bold;
+            color: #333;
+        }
+        .back-to-menu {
+            display: inline-block;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+        }
+        .back-to-menu:hover {
+            text-decoration: underline;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+        input[type="text"], input[type="number"], input[type="email"], input[type="password"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .alert {
+            color: #e74c3c;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">Payment Selection</div>
+    <div class="status-container">
+        <h2>Select Payment Method</h2>
+        <p>Total Amount: <span class="total-amount">${{ total_amount }}</span></p>
+        <form action="{{ url_for('confirm_payment') }}" method="POST">
+            <input type="hidden" name="order_id" value="{{ order_id }}">
+            <label>
+                <input type="radio" name="payment_method" value="Cash" required> Cash
+            </label><br>
+            <label>
+                <input type="radio" name="payment_method" value="CreditCard" required> Credit Card
+            </label><br>
+            <label>
+                <input type="radio" name="payment_method" value="DebitCard" required> Debit Card
+            </label><br>
+            <label>
+                <input type="radio" name="payment_method" value="BankTransfer" required> Bank Transfer
+            </label><br><br>
+            <button type="submit">Confirm Payment</button>
+        </form>
+    </div>
+</body>
+</html>
