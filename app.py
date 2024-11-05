@@ -1,3 +1,5 @@
+import random
+import string
 from flask import Flask, render_template, request, redirect, session, url_for
 import mysql.connector
 import base64
@@ -28,16 +30,37 @@ def login():
 def register():
     return render_template('register.html')
 
+def generate_passenger_id(length=10):
+    """Generates a random PassengerID."""
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
+
 @app.route('/handle_register', methods=['POST'])
 def handle_register():
     username = request.form['username']
     password = request.form['password']
+    first_name = request.form['fname']
+    last_name = request.form['lname']
+    pnr = request.form['pnr']
+    coach_number = request.form['coach_no']
+    phone_number = request.form['phone']
+    email = request.form['email']
     
+    # Generate a random PassengerID
+    passenger_id = generate_passenger_id()
+
     db = get_db_connection()
     cursor = db.cursor()
     try:
-        cursor.execute("INSERT INTO Login (LoginID, Password) VALUES (%s, %s)", 
-                       (username, password))
+        cursor.execute(
+            "INSERT INTO passenger(PassengerID, PNR, coach_no, Fname, Lname, Phone, email) VALUES (%s, %s, %s, %s, %s, %s, %s)", 
+            (passenger_id, pnr, coach_number, first_name, last_name, phone_number, email)
+        )
+
+        # Insert into Login table
+        cursor.execute(
+            "INSERT INTO Login (LoginID, Password, pas_id) VALUES (%s, %s, %s)", 
+            (username, password, passenger_id)
+        )
         db.commit()
     except mysql.connector.Error as err:
         print(f"Error: {err}")
