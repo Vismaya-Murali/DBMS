@@ -101,6 +101,62 @@ def home():
         return render_template('home.html')
     return redirect('/login')
 
+@app.route('/profile')
+def profile():
+    # Fetch PassengerID from session
+    passenger_id = session.get('passenger_id')
+
+    if not passenger_id:
+        return redirect('/login')  # Redirect if no user is logged in
+
+    db = get_db_connection()
+    cursor = db.cursor()
+
+    # Query to fetch passenger details
+    cursor.execute("""
+        SELECT PassengerID, coach_no, Fname, Lname, Phone, email
+        FROM passenger
+        WHERE PassengerID = %s
+    """, (passenger_id,))
+    passenger = cursor.fetchone()
+
+    cursor.close()
+    db.close()
+
+    if not passenger:
+        return "Passenger details not found.", 404
+
+    return render_template('profile.html', passenger=passenger)
+@app.route('/update_profile', methods=['POST'])
+def update_profile():
+    # Get the updated data from the form
+    passenger_id = session.get('passenger_id')
+    updated_fname = request.form['fname']
+    updated_lname = request.form['lname']
+    updated_phone = request.form['phone']
+    updated_email = request.form['email']
+    
+    # Get a database connection
+    db = get_db_connection()
+    
+    # Use the cursor from the connection object
+    cursor = db.cursor()
+    
+    # Update the database with new values
+    cursor.execute("""
+        UPDATE passenger
+        SET Fname = %s, Lname = %s, Phone = %s, email = %s
+        WHERE PassengerID = %s
+    """, (updated_fname, updated_lname, updated_phone, updated_email, passenger_id))
+    
+    # Commit the changes and close the cursor
+    db.commit()
+    cursor.close()
+
+    # Redirect to the profile page after updating
+    return redirect('/profile')
+
+
 @app.route('/select_station', methods=['POST'])
 def select_station():
     train_id = request.form.get('train_id')

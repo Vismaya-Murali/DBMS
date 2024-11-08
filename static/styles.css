@@ -5,6 +5,12 @@
     text-decoration: none;
 }
 
+.user-profile {
+    padding: 0 10px; /* Adjust this value as needed */
+    margin-left: -20px;
+    vertical-align: middle; /* This aligns the image with the other icons */
+}
+
 
 body {
     overflow: hidden;
