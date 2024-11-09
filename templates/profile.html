@@ -143,23 +143,20 @@ a:hover {
 
     <!-- Profile container with details -->
     <div class="profile-container">
-        <h1>Welcome, {{ passenger[2] }} {{ passenger[3] }}</h1> <!-- Fname and Lname -->
+        <h1>Welcome, {{ passenger[1] }} {{ passenger[2] }}</h1> <!-- Fname and Lname -->
         <table>
             <tr>
                 <th>Passenger ID</th>
                 <td>{{ passenger[0] }}</td> <!-- PassengerID -->
             </tr>
-            <tr>
-                <th>Coach Number</th>
-                <td>{{ passenger[1] }}</td> <!-- coach_no -->
-            </tr>
+           
             <tr>
                 <th>Phone</th>
-                <td>{{ passenger[4] }}</td> <!-- Phone -->
+                <td>{{ passenger[3] }}</td> <!-- Phone -->
             </tr>
             <tr>
                 <th>Email</th>
-                <td>{{ passenger[5] }}</td> <!-- email -->
+                <td>{{ passenger[4] }}</td> <!-- email -->
             </tr>
         </table>
         <button onclick="toggleEditForm()">Edit Profile</button>
@@ -168,13 +165,13 @@ a:hover {
         <div class="edit-form">
             <form action="/update_profile" method="POST">
                 <label for="fname">First Name:</label>
-                <input type="text" id="fname" name="fname" value="{{ passenger[2] }}">
+                <input type="text" id="fname" name="fname" value="{{ passenger[1] }}">
                 <label for="lname">Last Name:</label>
-                <input type="text" id="lname" name="lname" value="{{ passenger[3] }}">
+                <input type="text" id="lname" name="lname" value="{{ passenger[2] }}">
                 <label for="phone">Phone Number:</label>
-                <input type="text" id="phone" name="phone" value="{{ passenger[4] }}">
+                <input type="text" id="phone" name="phone" value="{{ passenger[3] }}">
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" value="{{ passenger[5] }}">
+                <input type="email" id="email" name="email" value="{{ passenger[4] }}">
                 <button type="submit">Update Profile</button>
             </form>
         </div>

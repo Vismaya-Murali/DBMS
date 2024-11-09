@@ -40,7 +40,6 @@ def handle_register():
     password = request.form['password']
     first_name = request.form['fname']
     last_name = request.form['lname']
-    coach_number = request.form['coach_no']
     phone_number = request.form['phone']
     email = request.form['email']
     role = request.form['role']  # Capturing the role ('user' or 'admin')
@@ -52,8 +51,8 @@ def handle_register():
     try:
         # Insert passenger details into passenger table
         cursor.execute(
-            "INSERT INTO passenger(PassengerID, coach_no, Fname, Lname, Phone, email) VALUES (%s, %s, %s, %s, %s, %s)", 
-            (passenger_id, coach_number, first_name, last_name, phone_number, email)
+            "INSERT INTO passenger(PassengerID, Fname, Lname, Phone, email) VALUES (%s, %s, %s, %s, %s)", 
+            (passenger_id, first_name, last_name, phone_number, email)
         )
 
         # Insert login credentials and role into the Login table
@@ -208,7 +207,7 @@ def profile():
 
     # Query to fetch passenger details
     cursor.execute("""
-        SELECT PassengerID, coach_no, Fname, Lname, Phone, email
+        SELECT PassengerID, Fname, Lname, Phone, email
         FROM passenger
         WHERE PassengerID = %s
     """, (passenger_id,))
