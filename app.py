@@ -142,52 +142,6 @@ def update_restaurant():
     else:
         return redirect('/login')
 
-
-# @app.route('/update_menu')
-# def update_menu():
-#     if 'username' in session and session.get('role') == 'admin':
-#         return render_template('update_menu.html')  # Render the update menu page
-#     else:
-#         return redirect('/login')
-
-# @app.route('/update_menu_item/<item_id>')
-# def update_menu_item(item_id):
-#     if 'username' in session and session.get('role') == 'admin':
-#         # Fetch item details from database (item_id) and pass it to the template
-#         return render_template('update_menu_item.html', item_id=item_id)
-#     else:
-#         return redirect('/login')
-
-# Route to handle updating the menu item details@app.route('/save_menu_item/<item_id>', methods=['POST'])
-def save_menu_item(item_id):
-    if 'username' in session and session.get('role') == 'admin':
-        # Process the form data and update the menu item in the database
-        new_name = request.form['name']  # The new name of the menu item
-        new_price = request.form['price']  # The new price of the menu item
-
-        # Assuming you want to update the menu based on Res_ID (restaurant ID) and ItemID (menu item ID)
-        res_id = request.form['res_id']  # This should be part of the form to specify the restaurant
-
-        # Update in the database (example query)
-        db = get_db_connection()
-        cursor = db.cursor()
-
-        # Assuming you're updating the menu item by the combination of Res_ID and ItemID
-        cursor.execute("""
-            UPDATE menu 
-            SET Item_name = %s, Price = %s 
-            WHERE Res_ID = %s AND ItemID = %s
-        """, (new_name, new_price, res_id, item_id))
-
-        db.commit()
-        cursor.close()
-        db.close()
-
-        return redirect('/update_menu')  # Redirect back to update menu page
-    else:
-        return redirect('/login')
-
-
 @app.route('/home')
 def home():
     if 'username' in session:
