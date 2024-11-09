@@ -144,8 +144,15 @@
         }
 
         /* Restaurant Card Styles */
+        .restaurant-list {
+            display: flex; /* Enable flexbox */
+            flex-wrap: wrap; /* Allow wrapping if there are too many cards */
+            gap: 20px; /* Space between cards */
+            justify-content: flex-start; /* Align cards to the left */
+        }
+
         .restaurant-card {
-            width: 200px;
+            width: 200px; /* Set fixed width for each card */
             background-color: white;
             padding: 15px;
             border-radius: 10px;
@@ -153,6 +160,7 @@
             text-align: center;
             margin-bottom: 20px;
             transition: transform 0.3s ease;
+            flex: 0 0 200px; /* Prevent cards from stretching */
         }
 
         .restaurant-card:hover {
@@ -215,10 +223,7 @@
 
             <div id="updateRestaurant" class="page hidden">
                 <h1>Restaurant Management</h1>
-
-                <!-- Restaurant Search Form -->
-                <form action="{{ url_for('update_restaurants') }}" method="POST">
-                    
+                <form action="{{ url_for('update_restaurant') }}" method="POST">
                     <div class="restaurant-list">
                         {% for restaurant in restaurants %}
                             <div class="restaurant-card">
@@ -229,7 +234,6 @@
                                     <button class="update-btn">Update</button>
                                 </a>
                             </div>
-                       
                         {% endfor %}
                     </div>
                 </form>
