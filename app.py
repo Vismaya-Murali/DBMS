@@ -174,6 +174,7 @@ def edit_rest():
     else:
         return redirect('/login')
 
+
 @app.route('/home')
 def home():
     if 'username' in session:

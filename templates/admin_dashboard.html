@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,10 +10,13 @@
         /* Global Styles */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            background-color: #121212;
+            /* Dark background */
             margin: 0;
             padding: 0;
             display: flex;
+            color: #ffffff;
+            /* White text for contrast */
         }
 
         .container {
@@ -29,12 +33,15 @@
             transition: width 0.3s ease, padding 0.3s ease;
             overflow: hidden;
             position: relative;
-            height: 100vh; /* Full viewport height */
+            height: 100vh;
+            /* Full viewport height */
         }
 
         .sidebar.collapsed {
-            width: 70px; /* Smaller width when collapsed */
-            padding: 20px 5px; /* Reduce padding */
+            width: 70px;
+            /* Smaller width when collapsed */
+            padding: 20px 5px;
+            /* Reduce padding */
         }
 
         .sidebar h2 {
@@ -44,7 +51,8 @@
         }
 
         .sidebar.collapsed h2 {
-            opacity: 0; /* Hide title when collapsed */
+            opacity: 0;
+            /* Hide title when collapsed */
         }
 
         .sidebar ul {
@@ -87,7 +95,10 @@
         .main-content {
             flex: 1;
             padding: 20px;
-            
+            background-color: #1e1e1e;
+            /* Dark background for main content */
+            color: #ffffff;
+            /* White text for readability */
         }
 
         .restaurant-list {
@@ -99,27 +110,31 @@
 
         .restaurant-card {
             width: 200px;
-            background-color: white;
+            background-color: #2a2a2a;
+            /* Dark background for restaurant cards */
             padding: 15px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
             text-align: center;
             margin-bottom: 20px;
             transition: transform 0.3s ease;
             cursor: pointer;
+            color: #ffffff;
         }
 
         .restaurant-card:hover {
             transform: scale(1.05);
         }
 
-        .restaurant-card h3, .restaurant-card h4 {
+        .restaurant-card h3,
+        .restaurant-card h4 {
             margin-top: 10px;
             font-size: 18px;
         }
 
         .restaurant-card p {
-            color: #555;
+            color: #cccccc;
+            /* Light gray for description text */
             font-size: 14px;
         }
 
@@ -130,11 +145,14 @@
             left: 50%;
             transform: translate(-50%, -50%);
             width: 300px;
-            background-color: white;
+            background-color: #333333;
+            /* Dark popup background */
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
             z-index: 1000;
+            color: #ffffff;
+            /* White text in popup */
         }
 
         .popup-form h2 {
@@ -145,6 +163,8 @@
             display: block;
             margin: 10px 0 5px;
             font-weight: bold;
+            color: #ff6f00;
+            /* Orange for labels */
         }
 
         .popup-form input[type="text"],
@@ -153,7 +173,12 @@
             padding: 8px;
             margin-bottom: 10px;
             border-radius: 5px;
-            border: 1px solid #ccc;
+            border: 1px solid #555;
+            /* Dark border */
+            background-color: #444;
+            /* Dark input background */
+            color: #ffffff;
+            /* White text */
         }
 
         .popup-form .submit-btn {
@@ -172,8 +197,10 @@
         }
 
         .popup-form .close-btn {
-            background-color: #e0e0e0;
-            color: #333;
+            background-color: #555555;
+            /* Darker background for close button */
+            color: #ffffff;
+            /* White text for close button */
             border: none;
             padding: 10px;
             width: 100%;
@@ -200,7 +227,11 @@
             margin-bottom: 20px;
             font-size: 16px;
             border-radius: 5px;
-            border: 1px solid #ccc;
+            border: 1px solid #555;
+            background-color: #444;
+            /* Dark input background */
+            color: #ffffff;
+            /* White text */
         }
 
         .menu-items {
@@ -211,11 +242,14 @@
 
         .menu-item {
             width: 200px;
-            background-color: white;
+            background-color: #2a2a2a;
+            /* Dark background for menu items */
             padding: 15px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
             text-align: center;
+            color: #ffffff;
+            /* White text */
         }
 
         .menu-item img {
@@ -230,119 +264,121 @@
         }
 
         .menu-item p {
-            color: #555;
+            color: #cccccc;
+            /* Light gray for description text */
             font-size: 14px;
         }
 
-        
         .hidden {
             display: none;
         }
-
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
-        <h2>FoodDesk Admin</h2>
-        <ul>
-            <li><a href="javascript:void(0)" onclick="showPage('dashboard')">Dashboard</a></li>
-            <li><a href="javascript:void(0)" onclick="showPage('updateRestaurant')">Update Restaurant</a></li>
-            <li><a href="javascript:void(0)" onclick="showPage('updateMenu')">Update Menu</a></li>
-        </ul>
-    </div>
-
-    <!-- Main Content Area -->
-    <div class="main-content">
-        <div id="dashboard" class="page">
-            <h1>Dashboard</h1>
-            <p>Welcome to the admin dashboard.</p>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+            <h2>FoodDesk Admin</h2>
+            <ul>
+                <li><a href="javascript:void(0)" onclick="showPage('dashboard')">Dashboard</a></li>
+                <li><a href="javascript:void(0)" onclick="showPage('updateRestaurant')">Update Restaurant</a></li>
+                <li><a href="javascript:void(0)" onclick="showPage('updateMenu')">Update Menu</a></li>
+            </ul>
         </div>
-        <div id="updateRestaurant" class="page hidden">
-            <h1>Restaurant Management</h1>
-            <div class="restaurant-list">
-                {% for restaurant in restaurants %}
-                    <div class="restaurant-card" onclick="openPopup('{{ restaurant[3] }}', '{{ restaurant[0] }}', '{{ restaurant[1] }}', '{{ restaurant[2] }}')">
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <div id="dashboard" class="page">
+                <h1>Dashboard</h1>
+                <p>Welcome to the admin dashboard.</p>
+            </div>
+            <div id="updateRestaurant" class="page hidden">
+                <h1>Restaurant Management</h1>
+                <div class="restaurant-list">
+                    {% for restaurant in restaurants %}
+                    <div class="restaurant-card"
+                        onclick="openPopup('{{ restaurant[3] }}', '{{ restaurant[0] }}', '{{ restaurant[1] }}', '{{ restaurant[2] }}')">
                         <h3>Restaurant Name: {{ restaurant[0] }}</h3>
                         <h4>Location: {{ restaurant[1] }}</h4>
                         <p>Phone Number: {{ restaurant[2] }}</p>
                         <button class="update-btn">Update</button>
                     </div>
-                {% endfor %}
-            </div>
-        </div>
-        <div id="updateMenu" class="page hidden">
-            <h1>Menu Management</h1>
-            <div class="menu-search">
-                <input type="text" placeholder="Search what you want to eat today..." />
-            </div>
-            <div class="menu-items">
-                <div class="menu-item">
-                    <img src="burger.png" alt="Mushroom Burger">
-                    <h3>Mushroom Burger</h3>
-                    <p>Fast Food Resto</p>
-                    <p>$5.59</p>
-                    <button class="update-btn" onclick="location.href='/update_menu_item/1'">Update</button>
+                    {% endfor %}
                 </div>
-                <div class="menu-item">
-                    <img src="burger.png" alt="Bean Burger">
-                    <h3>Bean Burger</h3>
-                    <p>Fast Food Resto</p>
-                    <p>$5.59</p>
-                    <button class="update-btn" onclick="location.href='/update_menu_item/2'">Update</button>
+            </div>
+            <div id="updateMenu" class="page hidden">
+                <h1>Menu Management</h1>
+                <div class="menu-search">
+                    <input type="text" placeholder="Search what you want to eat today..." />
                 </div>
-                <!-- Add more items as needed -->
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <img src="burger.png" alt="Mushroom Burger">
+                        <h3>Mushroom Burger</h3>
+                        <p>Fast Food Resto</p>
+                        <p>$5.59</p>
+                        <button class="update-btn" onclick="location.href='/update_menu_item/1'">Update</button>
+                    </div>
+                    <div class="menu-item">
+                        <img src="burger.png" alt="Bean Burger">
+                        <h3>Bean Burger</h3>
+                        <p>Fast Food Resto</p>
+                        <p>$5.59</p>
+                        <button class="update-btn" onclick="location.href='/update_menu_item/2'">Update</button>
+                    </div>
+                    <!-- Add more items as needed -->
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="overlay" onclick="closePopup()"></div>
+    <div class="overlay" onclick="closePopup()"></div>
 
-<div class="popup-form" id="popupForm">
-    <h2>Update Restaurant</h2>
-    <form action="{{ url_for('edit_rest') }}" method="POST">
-        <input type="hidden" id="restaurantId" name="restaurant_id">
-        <label for="restaurantName">Restaurant Name</label>
-        <input type="text" id="restaurantName" name="restaurant_name" required>
-        <label for="location">Location</label>
-        <input type="text" id="location" name="location" required>
-        <label for="phone">Phone Number</label>
-        <input type="tel" id="phone" name="phone" required>
-        <button type="submit" class="submit-btn">Submit</button>
-        <button type="button" class="close-btn" onclick="closePopup()">Cancel</button>
-    </form>
-</div>
+    <div class="popup-form" id="popupForm">
+        <h2>Update Restaurant</h2>
+        <form action="{{ url_for('edit_rest') }}" method="POST">
+            <input type="hidden" id="restaurantId" name="restaurant_id">
+            <label for="restaurantName">Restaurant Name</label>
+            <input type="text" id="restaurantName" name="restaurant_name" required>
+            <label for="location">Location</label>
+            <input type="text" id="location" name="location" required>
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" required>
+            <button type="submit" class="submit-btn">Submit</button>
+            <button type="button" class="close-btn" onclick="closePopup()">Cancel</button>
+        </form>
+    </div>
 
-<script>
-    function toggleSidebar() {
-        document.querySelector('.sidebar').classList.toggle('collapsed');
-    }
+    <script>
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('collapsed');
+        }
 
-    function showPage(pageId) {
-        const pages = document.querySelectorAll('.page');
-        pages.forEach(page => page.classList.add('hidden'));
-        document.getElementById(pageId).classList.remove('hidden');
-    }
+        function showPage(pageId) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.add('hidden'));
+            document.getElementById(pageId).classList.remove('hidden');
+        }
 
-    function openPopup(restaurantId, restaurantName, location, phone) {
-        document.getElementById('popupForm').style.display = 'block';
-        document.querySelector('.overlay').style.display = 'block';
+        function openPopup(restaurantId, restaurantName, location, phone) {
+            document.getElementById('popupForm').style.display = 'block';
+            document.querySelector('.overlay').style.display = 'block';
 
-        document.getElementById('restaurantId').value = restaurantId;
-        document.getElementById('restaurantName').value = restaurantName;
-        document.getElementById('location').value = location;
-        document.getElementById('phone').value = phone;
-    }
+            document.getElementById('restaurantId').value = restaurantId;
+            document.getElementById('restaurantName').value = restaurantName;
+            document.getElementById('location').value = location;
+            document.getElementById('phone').value = phone;
+        }
 
-    function closePopup() {
-        document.getElementById('popupForm').style.display = 'none';
-        document.querySelector('.overlay').style.display = 'none';
-    }
-</script>
+        function closePopup() {
+            document.getElementById('popupForm').style.display = 'none';
+            document.querySelector('.overlay').style.display = 'none';
+        }
+    </script>
 
 </body>
+
 </html>
