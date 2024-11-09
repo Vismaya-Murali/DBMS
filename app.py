@@ -1,6 +1,6 @@
 import random
 import string
-from flask import Flask, render_template, request, redirect, session, url_for
+from flask import Flask, flash, render_template, request, redirect, session, url_for
 import mysql.connector
 import base64
 import uuid
@@ -112,7 +112,7 @@ def admin_dashboard():
         cursor = db.cursor()
 
         # Fetch restaurant details
-        cursor.execute("SELECT Rname, Location, Phno FROM restaurant")
+        cursor.execute("SELECT Rname, Location, Phno,RID FROM restaurant")
         restaurants = cursor.fetchall()
 
         cursor.close()
@@ -122,7 +122,7 @@ def admin_dashboard():
     else:
         return redirect('/login')
 
-@app.route('/update_restaurant', methods=['POST'])
+@app.route('/update_restaurant', methods=['GET', 'POST'])
 def update_restaurant():
     if 'username' in session and session.get('role') == 'admin':
         # Fetch all restaurant data from the database
@@ -130,7 +130,7 @@ def update_restaurant():
         cursor = db.cursor()
 
         # Query to get all restaurant details
-        cursor.execute("SELECT Rname,Location,Phno FROM restaurant")
+        cursor.execute("SELECT Rname,Location,Phno,RID FROM restaurant")
         restaurants = cursor.fetchall()
         print("Fetched restaurants:", restaurants)
         cursor.close()
@@ -140,6 +140,40 @@ def update_restaurant():
         return render_template('admin_dashboard.html', restaurants=restaurants)
     else:
         return redirect('/login')
+
+@app.route('/edit_rest', methods=['POST'])
+def edit_rest():
+    if 'username' in session and session.get('role') == 'admin':
+        restaurant_id = request.form.get('restaurant_id')
+        restaurant_name = request.form.get('restaurant_name')
+        location = request.form.get('location')
+        phone = request.form.get('phone')
+        
+        db = get_db_connection()
+        cursor = db.cursor()
+
+        try:
+            cursor.execute("""
+                UPDATE restaurant
+                SET Rname = %s, Location = %s, Phno = %s
+                WHERE RID = %s
+            """, (restaurant_name, location, phone, restaurant_id))
+
+            db.commit()
+            flash("Restaurant details updated successfully.", "success")
+        
+        except Exception as e:
+            db.rollback()
+            flash("An error occurred: " + str(e), "error")
+
+        finally:
+            cursor.close()
+            db.close()
+
+        return redirect(url_for('admin_dashboard',section='updateRestaurant'))
+    else:
+        return redirect('/login')
+
 
 @app.route('/home')
 def home():
