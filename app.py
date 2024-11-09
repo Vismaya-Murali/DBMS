@@ -93,17 +93,19 @@ def handle_login():
     db.close()
 
     if user:
-        # Store username and PassengerID in the session
+        # Store username, PassengerID, and role in the session
         session['username'] = username
         session['passenger_id'] = user[0]  # Store PassengerID in the session
+        session['role'] = 'admin' if user[1] == 1 else 'user'  # Set role based on is_admin value
         
-        # Check if the user is an admin or a regular user
+        # Redirect based on the role
         if user[1] == 1:  # Admin
             return redirect('/admin_dashboard')  # Redirect to admin dashboard
         else:  # Regular user
             return redirect('/home')  # Redirect to user home page
     else:
         return "Invalid credentials, try again."
+
 
 @app.route('/admin_dashboard')
 def admin_dashboard():
@@ -112,7 +114,7 @@ def admin_dashboard():
         cursor = db.cursor()
 
         # Fetch restaurant details
-        cursor.execute("SELECT Rname, Location, Phno,RID FROM restaurant")
+        cursor.execute("SELECT Rname, Location, Phno, RID FROM restaurant")
         restaurants = cursor.fetchall()
 
         cursor.close()
@@ -121,6 +123,7 @@ def admin_dashboard():
         return render_template('admin_dashboard.html', restaurants=restaurants)
     else:
         return redirect('/login')
+
 
 @app.route('/update_restaurant', methods=['GET', 'POST'])
 def update_restaurant():
@@ -456,7 +459,9 @@ def cart():
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect('/')
+    flash("You have been logged out.", "info")
+    return redirect('/login')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
