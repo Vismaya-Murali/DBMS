@@ -114,16 +114,16 @@ def admin_dashboard():
         return redirect('/login')  # If not logged in as admin, redirect to login
 
 @app.route('/update_restaurant', methods=['POST'])
-def update_restaurants():
+def update_restaurant():
     if 'username' in session and session.get('role') == 'admin':
         # Fetch all restaurant data from the database
         db = get_db_connection()
         cursor = db.cursor()
 
         # Query to get all restaurant details
-        cursor.execute("select * from restaurant")
+        cursor.execute("SELECT * FROM restaurant")
         restaurants = cursor.fetchall()
-
+        print("Fetched restaurants:", restaurants)
         cursor.close()
         db.close()
 
