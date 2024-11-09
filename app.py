@@ -43,25 +43,30 @@ def handle_register():
     coach_number = request.form['coach_no']
     phone_number = request.form['phone']
     email = request.form['email']
+    role = request.form['role']  # Capturing the role ('user' or 'admin')
     
     passenger_id = generate_passenger_id()
 
     db = get_db_connection()
     cursor = db.cursor()
     try:
+        # Insert passenger details into passenger table
         cursor.execute(
             "INSERT INTO passenger(PassengerID, coach_no, Fname, Lname, Phone, email) VALUES (%s, %s, %s, %s, %s, %s)", 
             (passenger_id, coach_number, first_name, last_name, phone_number, email)
         )
 
+        # Insert login credentials and role into the Login table
         cursor.execute(
-            "INSERT INTO Login (LoginID, Password, pas_id) VALUES (%s, %s, %s)", 
-            (username, password, passenger_id)
+            "INSERT INTO Login (LoginID, Password, user_id, is_admin) VALUES (%s, %s, %s, %s)", 
+            (username, password, passenger_id, 1 if role == 'admin' else 0)  # 1 for admin, 0 for user
         )
         db.commit()
         
-        # Store PassengerID in the session
+        # Store PassengerID and Role in the session
         session['passenger_id'] = passenger_id
+        session['role'] = role  # Store the role in the session
+
     except mysql.connector.Error as err:
         print(f"Error: {err}")
         db.rollback()
@@ -80,8 +85,8 @@ def handle_login():
     db = get_db_connection()
     cursor = db.cursor()
     
-    # Fetch user details including PassengerID
-    cursor.execute("SELECT pas_id FROM Login WHERE LoginID = %s AND Password = %s", 
+    # Fetch user details including PassengerID and is_admin field
+    cursor.execute("SELECT user_id, is_admin FROM Login WHERE LoginID = %s AND Password = %s", 
                    (username, password))
     user = cursor.fetchone()
     
@@ -89,11 +94,89 @@ def handle_login():
     db.close()
 
     if user:
+        # Store username and PassengerID in the session
         session['username'] = username
         session['passenger_id'] = user[0]  # Store PassengerID in the session
-        return redirect('/home')
+        
+        # Check if the user is an admin or a regular user
+        if user[1] == 1:  # Admin
+            return redirect('/admin_dashboard')  # Redirect to admin dashboard
+        else:  # Regular user
+            return redirect('/home')  # Redirect to user home page
     else:
         return "Invalid credentials, try again."
+
+@app.route('/admin_dashboard')
+def admin_dashboard():
+    if 'username' in session and session.get('role') == 'admin':
+        return render_template('admin_dashboard.html')  # Admin dashboard page
+    else:
+        return redirect('/login')  # If not logged in as admin, redirect to login
+
+@app.route('/update_restaurant', methods=['POST'])
+def update_restaurants():
+    if 'username' in session and session.get('role') == 'admin':
+        # Fetch all restaurant data from the database
+        db = get_db_connection()
+        cursor = db.cursor()
+
+        # Query to get all restaurant details
+        cursor.execute("select * from restaurant")
+        restaurants = cursor.fetchall()
+
+        cursor.close()
+        db.close()
+
+        # Render only the update restaurant HTML content (with restaurant data)
+        return render_template('admin_dashboard.html', restaurants=restaurants)
+    else:
+        return redirect('/login')
+
+
+# @app.route('/update_menu')
+# def update_menu():
+#     if 'username' in session and session.get('role') == 'admin':
+#         return render_template('update_menu.html')  # Render the update menu page
+#     else:
+#         return redirect('/login')
+
+# @app.route('/update_menu_item/<item_id>')
+# def update_menu_item(item_id):
+#     if 'username' in session and session.get('role') == 'admin':
+#         # Fetch item details from database (item_id) and pass it to the template
+#         return render_template('update_menu_item.html', item_id=item_id)
+#     else:
+#         return redirect('/login')
+
+# Route to handle updating the menu item details@app.route('/save_menu_item/<item_id>', methods=['POST'])
+def save_menu_item(item_id):
+    if 'username' in session and session.get('role') == 'admin':
+        # Process the form data and update the menu item in the database
+        new_name = request.form['name']  # The new name of the menu item
+        new_price = request.form['price']  # The new price of the menu item
+
+        # Assuming you want to update the menu based on Res_ID (restaurant ID) and ItemID (menu item ID)
+        res_id = request.form['res_id']  # This should be part of the form to specify the restaurant
+
+        # Update in the database (example query)
+        db = get_db_connection()
+        cursor = db.cursor()
+
+        # Assuming you're updating the menu item by the combination of Res_ID and ItemID
+        cursor.execute("""
+            UPDATE menu 
+            SET Item_name = %s, Price = %s 
+            WHERE Res_ID = %s AND ItemID = %s
+        """, (new_name, new_price, res_id, item_id))
+
+        db.commit()
+        cursor.close()
+        db.close()
+
+        return redirect('/update_menu')  # Redirect back to update menu page
+    else:
+        return redirect('/login')
+
 
 @app.route('/home')
 def home():

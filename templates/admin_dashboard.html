@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - FoodDesk</title>
+
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: #ff6f00;
+            padding: 20px;
+            color: white;
+            transition: width 0.3s ease, padding 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .sidebar.collapsed {
+            width: 70px; /* Smaller width when collapsed */
+            padding: 20px 5px; /* Reduce padding */
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            font-size: 24px;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed h2 {
+            opacity: 0; /* Hide title when collapsed */
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 20px 0;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #e65100;
+        }
+
+        /* Sidebar Toggle Button */
+        .sidebar-toggle {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            cursor: pointer;
+            font-size: 24px;
+            color: white;
+            background-color: transparent;
+            border: none;
+            padding: 10px;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .menu-search input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .menu-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .menu-item {
+            width: 200px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .menu-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .menu-item h3 {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        .menu-item p {
+            color: #555;
+            font-size: 14px;
+        }
+
+        .update-btn {
+            background-color: #ff6f00;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .update-btn:hover {
+            background-color: #e65100;
+        }
+
+        /* Restaurant Card Styles */
+        .restaurant-card {
+            width: 200px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .restaurant-card:hover {
+            transform: scale(1.05); /* Slight zoom effect on hover */
+        }
+
+        .restaurant-card h3,
+        .restaurant-card h4 {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        .restaurant-card p {
+            color: #555;
+            font-size: 14px;
+        }
+
+        .restaurant-card .update-btn {
+            background-color: #ff6f00;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .restaurant-card .update-btn:hover {
+            background-color: #e65100;
+        }
+
+        /* Hidden by default */
+        .hidden {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+            <h2>FoodDesk Admin</h2>
+            <ul>
+                <li><a href="javascript:void(0)" onclick="showPage('dashboard')">Dashboard</a></li>
+                <li><a href="javascript:void(0)" onclick="showPage('updateRestaurant')">Update Restaurant</a></li>
+                <li><a href="javascript:void(0)" onclick="showPage('updateMenu')">Update Menu</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <div id="dashboard" class="page">
+                <h1>Dashboard</h1>
+                <p>Welcome to the admin dashboard.</p>
+            </div>
+
+            <div id="updateRestaurant" class="page hidden">
+                <h1>Restaurant Management</h1>
+
+                <!-- Restaurant Search Form -->
+                <form action="{{ url_for('update_restaurants') }}" method="POST">
+                    
+                    <div class="restaurant-list">
+                        {% for restaurant in restaurants %}
+                            <div class="restaurant-card">
+                                <h3>Restaurant Name: {{ restaurant[1] }}</h3>
+                                <h4>Location: {{ restaurant[2] }}</h4>
+                                <p>Phone Number: {{ restaurant[3] }}</p>
+                                <a href="/update_restaurant/{{ restaurant[0] }}">
+                                    <button class="update-btn">Update</button>
+                                </a>
+                            </div>
+                       
+                        {% endfor %}
+                    </div>
+                </form>
+            </div>
+
+            <div id="updateMenu" class="page hidden">
+                <h1>Menu Management</h1>
+
+                <div class="menu-search">
+                    <input type="text" placeholder="Search what you want to eat today..." />
+                </div>
+
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <img src="burger.png" alt="Mushroom Burger">
+                        <h3>Mushroom Burger</h3>
+                        <p>Fast Food Resto</p>
+                        <p>$5.59</p>
+                        <button class="update-btn" onclick="location.href='/update_menu_item/1'">Update</button>
+                    </div>
+                    <!-- Repeat for each menu item -->
+                    <div class="menu-item">
+                        <img src="burger.png" alt="Bean Burger">
+                        <h3>Bean Burger</h3>
+                        <p>Fast Food Resto</p>
+                        <p>$5.59</p>
+                        <button class="update-btn" onclick="location.href='/update_menu_item/2'">Update</button>
+                    </div>
+                    <!-- Add more items as needed -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.add('hidden'));
+
+            // Show the selected page
+            const selectedPage = document.getElementById(pageId);
+            selectedPage.classList.remove('hidden');
+        }
+
+        // Set the default page to 'dashboard'
+        showPage('dashboard');
+    </script>
+
+</body>
+</html>
