@@ -109,9 +109,20 @@ def handle_login():
 @app.route('/admin_dashboard')
 def admin_dashboard():
     if 'username' in session and session.get('role') == 'admin':
-        return render_template('admin_dashboard.html')  # Admin dashboard page
+        db = get_db_connection()
+        cursor = db.cursor()
+
+        # Fetch restaurant details
+        cursor.execute("SELECT Rname, Location, Phno FROM restaurant")
+        restaurants = cursor.fetchall()
+
+        cursor.close()
+        db.close()
+
+        return render_template('admin_dashboard.html', restaurants=restaurants)
     else:
-        return redirect('/login')  # If not logged in as admin, redirect to login
+        return redirect('/login')
+
 
 @app.route('/update_restaurant', methods=['POST'])
 def update_restaurant():
@@ -121,7 +132,7 @@ def update_restaurant():
         cursor = db.cursor()
 
         # Query to get all restaurant details
-        cursor.execute("SELECT * FROM restaurant")
+        cursor.execute("SELECT Rname,Location,Phno FROM restaurant")
         restaurants = cursor.fetchall()
         print("Fetched restaurants:", restaurants)
         cursor.close()

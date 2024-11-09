@@ -227,9 +227,9 @@
                     <div class="restaurant-list">
                         {% for restaurant in restaurants %}
                             <div class="restaurant-card">
-                                <h3>Restaurant Name: {{ restaurant[1] }}</h3>
-                                <h4>Location: {{ restaurant[2] }}</h4>
-                                <p>Phone Number: {{ restaurant[3] }}</p>
+                                <h3>Restaurant Name: {{ restaurant[0] }}</h3>
+                                <h4>Location: {{ restaurant[1] }}</h4>
+                                <p>Phone Number: {{ restaurant[2] }}</p>
                                 <a href="/update_restaurant/{{ restaurant[0] }}">
                                     <button class="update-btn">Update</button>
                                 </a>
