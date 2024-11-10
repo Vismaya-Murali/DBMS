@@ -465,35 +465,36 @@ def place_order():
     try:
         order_id = str(uuid.uuid4())[:8]
         order_date = datetime.now().date()
-        total_amount = 0
-
-        # Calculate total price and gather item details
-        for item in order_items:
-            cursor.execute("SELECT Price, ItemID FROM menu WHERE Item_name = %s", (item['item_name'],))
-            item_data = cursor.fetchone()
-            if item_data is None:
-                return f"Error: Item {item['item_name']} not found in menu.", 404
-            
-            price, item_id = item_data
-            total_amount += price * item['quantity']
-            item['item_id'] = item_id
-            item['price'] = price
 
         # Insert the order with the correct Passenger_id
         cursor.execute(
             "INSERT INTO orders (OrderID, Order_date, DP_ID, R_ID, S_ID, Passenger_id) VALUES (%s, %s, %s, %s, %s, %s)",
-            (order_id, order_date, dp_id, restaurant_id, station_id, passenger_id)  # Use Passenger_id here
+            (order_id, order_date, dp_id, restaurant_id, station_id, passenger_id)
         )
 
-        # Insert each item in the order
+        # Insert each item in the order into orderitems table
         for item in order_items:
+            # Find the ItemID and Price from the menu table
+            cursor.execute("SELECT ItemID, Price FROM menu WHERE Item_name = %s AND Res_ID = %s", 
+                           (item['item_name'], restaurant_id))
+            item_data = cursor.fetchone()
+            if item_data is None:
+                return f"Error: Item {item['item_name']} not found in menu.", 404
+
+            item_id, price = item_data
             order_item_id = str(uuid.uuid4())[:8]
+
+            # Insert into orderitems table
             cursor.execute(
-                "INSERT INTO orderitems (OrdItemID, ItemPrice, quantity, Order_id, R_ID) VALUES (%s, %s, %s, %s, %s)",
-                (order_item_id, item['price'], item['quantity'], order_id, restaurant_id)
+                "INSERT INTO orderitems (OrdItemID, ItemPrice, quantity, Order_id, R_ID, ItemID) VALUES (%s, %s, %s, %s, %s, %s)",
+                (order_item_id, price, item['quantity'], order_id, restaurant_id, item_id)
             )
 
         db.commit()
+
+        # Use the SQL function to calculate the total price for the order
+        cursor.execute("SELECT CalculateTotalPrice(%s)", (order_id,))
+        total_amount = cursor.fetchone()[0]
 
         # Redirect to payment selection
         return redirect(url_for('payment_selection', order_id=order_id, total_amount=total_amount))
@@ -505,6 +506,8 @@ def place_order():
     finally:
         cursor.close()
         db.close()
+
+
 
 @app.route('/payment_selection/<order_id>/<float:total_amount>', methods=['GET'])
 def payment_selection(order_id, total_amount):
