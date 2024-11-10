@@ -1,10 +1,11 @@
 import random
 import string
-from flask import Flask, flash, render_template, request, redirect, session, url_for
+from flask import Flask, flash, render_template, request, redirect, session, url_for , jsonify
 import mysql.connector
 import base64
 import uuid
 from datetime import datetime
+import json
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Set a secret key for session management
@@ -117,12 +118,56 @@ def admin_dashboard():
         cursor.execute("SELECT Rname, Location, Phno, RID FROM restaurant")
         restaurants = cursor.fetchall()
 
+        # Fetch menu items for each restaurant, including image data
+        menu_items = {}
+        for restaurant in restaurants:
+            restaurant_id = restaurant[3]  # Assuming 'RID' is the 4th field (Res_ID)
+            cursor.execute("SELECT Item_name, Price, Image FROM menu WHERE Res_ID = %s", (restaurant_id,))
+            menu_items[restaurant_id] = []
+            
+            # Convert Image data to Base64 if it exists
+            for item in cursor.fetchall():
+                item_name, price, image_data = item
+                if image_data:
+                    # Convert binary image data to Base64 string
+                    image_base64 = base64.b64encode(image_data).decode('utf-8')
+                else:
+                    image_base64 = None  # Handle case where no image data is available
+                menu_items[restaurant_id].append((item_name, price, image_base64))
+
         cursor.close()
         db.close()
 
-        return render_template('admin_dashboard.html', restaurants=restaurants)
+        # Pass both restaurants and menu items to the template
+        return render_template('admin_dashboard.html', restaurants=restaurants, menu_items=menu_items)
     else:
         return redirect('/login')
+
+@app.route('/delete_menu_item', methods=['POST'])
+def delete_menu_item():
+    try:
+        data = request.get_json()  # Get the JSON data sent by the client
+        item_name = data['item_name']
+        price = data['price']
+        restaurant_id = data['restaurant_id']
+        
+        db = get_db_connection()
+        cursor = db.cursor()
+
+        # Delete the item from the menu table
+        cursor.execute("DELETE FROM menu WHERE Res_ID = %s AND Item_name = %s AND Price = %s", 
+                       (restaurant_id, item_name, price))
+        
+        db.commit()  # Commit the changes to the database
+        
+        cursor.close()
+        db.close()
+        
+        return jsonify({'success': True})  # Return a success response
+    
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({'success': False, 'error': str(e)})  # Return an error response in case of failure
 
 
 @app.route('/update_restaurant', methods=['GET', 'POST'])
@@ -177,6 +222,51 @@ def edit_rest():
     else:
         return redirect('/login')
 
+@app.route('/update_menu_item', methods=['POST'])
+def update_menu_item():
+    if 'username' in session and session.get('role') == 'admin':
+        restaurant_id = request.form.get('restaurant_id')
+        item_id = request.form.get('item_id')
+        item_name = request.form.get('item_name')
+        price = request.form.get('price')
+        image_file = request.files.get('image')
+
+        db = get_db_connection()
+        cursor = db.cursor()
+
+        # Prepare the image data if an image file was uploaded
+        image_data = None
+        if image_file:
+            image_data = image_file.read()
+
+        try:
+            # Check if the item with this ItemID exists in the menu for the specified restaurant
+            cursor.execute("SELECT ItemID FROM menu WHERE Res_ID = %s AND ItemID = %s", (restaurant_id, item_id))
+            existing_item = cursor.fetchone()
+
+            if existing_item:
+                # Return a JSON response if the ItemID exists
+                return jsonify({"success": False, "message": "Item ID already exists."})
+
+            else:
+                # Insert new item if it does not exist
+                cursor.execute("""
+                    INSERT INTO menu (Res_ID, ItemID, Item_name, Price, Image)
+                    VALUES (%s, %s, %s, %s, %s)
+                """, (restaurant_id, item_id, item_name, price, image_data))
+
+                db.commit()
+                return jsonify({"success": True, "message": "Menu item successfully added."})
+
+        except Exception as e:
+            db.rollback()
+            return jsonify({"success": False, "message": f"An error occurred: {e}"})
+
+        finally:
+            cursor.close()
+            db.close()
+    else:
+        return jsonify({"success": False, "message": "Unauthorized access."})
 
 @app.route('/home')
 def home():
@@ -465,4 +555,3 @@ def logout():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
