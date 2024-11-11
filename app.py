@@ -229,6 +229,7 @@ def update_menu_item():
         item_id = request.form.get('item_id')
         item_name = request.form.get('item_name')
         price = request.form.get('price')
+        quantity = request.form.get('quantity')  # Get the quantity input
         image_file = request.files.get('image')
 
         db = get_db_connection()
@@ -245,15 +246,22 @@ def update_menu_item():
             existing_item = cursor.fetchone()
 
             if existing_item:
-                # Return a JSON response if the ItemID exists
-                return jsonify({"success": False, "message": "Item ID already exists."})
+                # If the item exists, update the quantity and other fields
+                cursor.execute("""
+                    UPDATE menu
+                    SET Item_name = %s, Price = %s, Image = %s, Quantity = %s
+                    WHERE Res_ID = %s AND ItemID = %s
+                """, (item_name, price, image_data, quantity, restaurant_id, item_id))
+
+                db.commit()
+                return jsonify({"success": True, "message": "Menu item successfully updated."})
 
             else:
                 # Insert new item if it does not exist
                 cursor.execute("""
-                    INSERT INTO menu (Res_ID, ItemID, Item_name, Price, Image)
-                    VALUES (%s, %s, %s, %s, %s)
-                """, (restaurant_id, item_id, item_name, price, image_data))
+                    INSERT INTO menu (Res_ID, ItemID, Item_name, Price, Image, Quantity)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """, (restaurant_id, item_id, item_name, price, image_data, quantity))
 
                 db.commit()
                 return jsonify({"success": True, "message": "Menu item successfully added."})
@@ -267,6 +275,7 @@ def update_menu_item():
             db.close()
     else:
         return jsonify({"success": False, "message": "Unauthorized access."})
+
 
 @app.route('/home')
 def home():
