@@ -101,6 +101,7 @@
             /* White text for readability */
         }
 
+        /* Restaurant List Styles */
         .restaurant-list {
             display: flex;
             flex-wrap: wrap;
@@ -108,10 +109,10 @@
             justify-content: flex-start;
         }
 
+        /* Restaurant Card Styles */
         .restaurant-card {
             width: 200px;
             background-color: #2a2a2a;
-            /* Dark background for restaurant cards */
             padding: 15px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
@@ -120,16 +121,23 @@
             transition: transform 0.3s ease;
             cursor: pointer;
             color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .restaurant-card:hover {
             transform: scale(1.05);
         }
 
-        .restaurant-card h3,
-        .restaurant-card h4 {
-            margin-top: 10px;
+        .restaurant-card h3 {
             font-size: 18px;
+            margin-top: 10px;
+        }
+
+        .restaurant-card h4 {
+            font-size: 16px;
+            margin-top: 5px;
         }
 
         .restaurant-card p {
@@ -138,6 +146,23 @@
             font-size: 14px;
         }
 
+        .restaurant-card button {
+            background-color: #ff6f00;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .restaurant-card button:hover {
+            background-color: #e65100;
+        }
+
+        /* Popup Form Styles */
         .popup-form {
             display: none;
             position: fixed;
@@ -210,6 +235,7 @@
             margin-top: 10px;
         }
 
+        /* Overlay Styles */
         .overlay {
             display: none;
             position: fixed;
@@ -221,6 +247,7 @@
             z-index: 999;
         }
 
+        /* Menu Search Input */
         .menu-search input {
             width: 90%;
             padding: 10px;
@@ -234,6 +261,7 @@
             /* White text */
         }
 
+        /* Menu Item Styles */
         .menu-items {
             display: flex;
             flex-wrap: wrap;
@@ -269,6 +297,7 @@
             font-size: 14px;
         }
 
+        /* Hidden Elements */
         .hidden {
             display: none;
         }
@@ -356,7 +385,7 @@
                                 <p>No image available</p> <!-- Fallback message if no image exists -->
                                 {% endif %}
                                 <h3>{{ item[0] }}</h3> <!-- Display item name -->
-                                <p>Price: ${{ item[1] }}</p> <!-- Display item price -->
+                                <p>Price: ₹{{ item[1] }}</p> <!-- Display item price -->
                                 <button class="delete-btn"
                                     onclick="deleteMenuItem('{{ item[0] }}', '{{ item[1] }}', '{{ restaurant[3] }}')">-</button>
                             </div>
