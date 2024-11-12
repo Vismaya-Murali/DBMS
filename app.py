@@ -481,15 +481,6 @@ def place_order():
 
     if not passenger_id or not restaurant_id or not station_id:
         return "Error: Missing required information.", 400
-
-    # Find an available delivery person
-    cursor.execute("SELECT DPID FROM deliveryperson LIMIT 1")
-    dp_id = cursor.fetchone()
-    if dp_id is None:
-        return "Error: No delivery person available.", 400
-    dp_id = dp_id[0]
-
-    # Get order items from form data
     order_items = []
     for key, value in request.form.items():
         if key.startswith('quantity_') and int(value) > 0:
@@ -505,8 +496,8 @@ def place_order():
 
         # Insert the order with the correct Passenger_id
         cursor.execute(
-            "INSERT INTO orders (OrderID, Order_date, DP_ID, R_ID, S_ID, Passenger_id) VALUES (%s, %s, %s, %s, %s, %s)",
-            (order_id, order_date, dp_id, restaurant_id, station_id, passenger_id)
+            "INSERT INTO orders (OrderID, Order_date, R_ID, S_ID, Passenger_id) VALUES (%s, %s, %s, %s, %s)",
+            (order_id, order_date, restaurant_id, station_id, passenger_id)
         )
 
         # Insert each item in the order into orderitems table
