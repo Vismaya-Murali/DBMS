@@ -41,6 +41,7 @@
             padding: 10px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             text-align: center;
+            transition: opacity 0.3s ease;
         }
         .card img {
             width: 100%;
@@ -91,6 +92,10 @@
             display: block;
             width: fit-content;
         }
+        .unavailable {
+            opacity: 0.5;
+            filter: grayscale(100%);
+        }
     </style>
     <script>
         function updateQuantity(itemId, change) {
@@ -112,22 +117,28 @@
             <input type="hidden" name="restaurant_id" value="{{ restaurant_id }}">
             <div class="grid-container">
                 {% for item in menu_items %}
-                <div class="card">
+                <div class="card {% if item[3] == 0 %}unavailable{% endif %}">
                     {% if item[2] is not none %}
                         <img src="data:image/jpeg;base64,{{ item[2] }}" alt="{{ item[0] }}">
                     {% else %}
                         <img src="placeholder.jpg" alt="No image available">
                     {% endif %}
                     <h3>{{ item[0] }}</h3>
-                    <p class="price">${{ item[1] }}</p>
+                    <p class="price">₹{{ item[1] }}</p>
+                    <p>Available: {{ item[3] }}</p>
                     <div class="quantity-container">
-                        <button type="button" class="quantity-btn" onclick="updateQuantity('{{ item[0] }}', -1)">-</button>
+                        <button type="button" class="quantity-btn" 
+                                onclick="updateQuantity('{{ item[0] }}', -1)" 
+                                {% if item[3] == 0 %} disabled {% endif %}>-</button>
                         <input type="text" name="quantity_{{ item[0] }}" id="quantity-{{ item[0] }}" value="0" readonly class="quantity-input">
-                        <button type="button" class="quantity-btn" onclick="updateQuantity('{{ item[0] }}', 1)">+</button>
+                        <button type="button" class="quantity-btn" 
+                                onclick="updateQuantity('{{ item[0] }}', 1)" 
+                                {% if item[3] == 0 %} disabled {% endif %}>+</button>
                     </div>
                 </div>
                 {% endfor %}
             </div>
+            
             <button type="submit" class="place-order-btn">Place Order</button>
         </form>
     </div>
