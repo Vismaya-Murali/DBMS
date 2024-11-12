@@ -62,7 +62,32 @@ def handle_register():
             (username, password, passenger_id, 1 if role == 'admin' else 0)  # 1 for admin, 0 for user
         )
         db.commit()
+
+        # Create the user in MySQL if it doesn't exist
+        cursor.execute("""
+            CREATE USER IF NOT EXISTS %s@'localhost' IDENTIFIED BY %s;
+        """, (username, password))
         
+        # Granting privileges based on the role
+        if role == 'admin':
+            # Grant all privileges to admin
+            cursor.execute("""
+                GRANT ALL PRIVILEGES ON *.* TO %s@'localhost' WITH GRANT OPTION;
+            """, (username,))
+        elif role == 'user':
+            # Grant select and insert privileges to user, update on passenger table
+            cursor.execute("""
+                GRANT SELECT, INSERT ON *.* TO %s@'localhost';
+            """, (username,))
+            cursor.execute("""
+                GRANT UPDATE ON passenger TO %s@'localhost';
+            """, (username,))
+        
+        # Apply changes
+        cursor.execute("FLUSH PRIVILEGES;")
+
+        db.commit()
+
         # Store PassengerID and Role in the session
         session['passenger_id'] = passenger_id
         session['role'] = role  # Store the role in the session
@@ -76,6 +101,7 @@ def handle_register():
         db.close()
 
     return redirect('/login')
+
 
 @app.route('/handle_login', methods=['POST'])
 def handle_login():
