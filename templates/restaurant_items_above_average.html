@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Restaurant Items Above Average Price</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #f1f1f1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #f39c12;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+            width: 300px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #333;
+            background-color: #222;
+            color: #f1f1f1;
+            margin-bottom: 15px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #f39c12;
+            color: #121212;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #e67e22;
+        }
+
+        table {
+            width: 100%;
+            max-width: 600px;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #333;
+            color: #f39c12;
+            border-bottom: 2px solid #f39c12;
+        }
+
+        td {
+            background-color: #1e1e1e;
+            border-bottom: 1px solid #333;
+        }
+
+        p {
+            font-size: 18px;
+            margin-top: 20px;
+            color: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <h1>Items with Price Above Average in Restaurant</h1>
+
+    <form method="POST" action="/restaurant_items_above_average">
+        <label for="rid">Enter Restaurant ID:</label>
+        <input type="text" id="rid" name="rid" required>
+        <button type="submit">Get Items</button>
+    </form>
+
+    {% if average_price is not none %}
+        <h2>Average Price: ₹{{ "%.2f" | format(average_price) }}</h2>
+    {% endif %}
+
+    {% if items %}
+        <h2>Results:</h2>
+        <table>
+            <tr>
+                <th>Item Name</th>
+                <th>Price</th>
+                <th>Restaurant Name</th>
+            </tr>
+            {% for item in items %}
+                <tr>
+                    <td>{{ item[0] }}</td>
+                    <td>{{ item[1] }}</td>
+                    <td>{{ item[2] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No items found above average price for the specified restaurant.</p>
+    {% endif %}
+</body>
+</html>

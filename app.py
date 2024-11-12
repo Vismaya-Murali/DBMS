@@ -406,7 +406,7 @@ def select_restaurant():
 def menu(restaurant_id):
     db = get_db_connection()
     cursor = db.cursor()
-    query = "SELECT Item_name, Price, Image FROM menu WHERE Res_ID = %s"
+    query = "SELECT Item_name, Price, Image, quantity FROM menu WHERE Res_ID = %s"
     cursor.execute(query, (restaurant_id,))
     menu_items = cursor.fetchall()
 
@@ -415,10 +415,11 @@ def menu(restaurant_id):
             menu_items[index] = (
                 item[0],
                 item[1],
-                base64.b64encode(item[2]).decode('utf-8')
+                base64.b64encode(item[2]).decode('utf-8'),
+                item[3]  # Add the current quantity
             )
         else:
-            menu_items[index] = (item[0], item[1], None)
+            menu_items[index] = (item[0], item[1], None, 0)  # Default quantity is 0
 
     cursor.close()
     db.close()
@@ -432,6 +433,7 @@ def menu(restaurant_id):
         session.modified = True
 
     return render_template('menu.html', restaurant_name=restaurant_id, menu_items=menu_items)
+
 
 @app.route('/place_order', methods=['POST'])
 def place_order():
@@ -548,6 +550,44 @@ def cart():
     cart_items = session.get('cart', [])
     total_amount = sum(item['price'] for item in cart_items)
     return render_template('cart.html', cart_items=cart_items, total_amount=total_amount)
+
+
+@app.route('/restaurant_items_above_average', methods=['GET', 'POST'])
+def restaurant_items_above_average():
+    if 'username' in session and session.get('role') == 'admin':
+        db = get_db_connection()
+        cursor = db.cursor()
+
+        items = []
+        average_price = None  # Initialize the average price
+        if request.method == 'POST':
+            rid = request.form.get('rid')
+            if rid:
+                # Query to get the average price for the specified restaurant
+                cursor.execute("""
+                    SELECT AVG(Price) FROM menu WHERE Res_ID = %s
+                """, (rid,))
+                average_price = cursor.fetchone()[0]
+
+                # Query to get items whose price is greater than the average price of items in the specified restaurant
+                cursor.execute("""
+                    SELECT m.Item_name, m.Price, r.Rname
+                    FROM menu m
+                    JOIN restaurant r ON m.Res_ID = r.RID
+                    WHERE m.Price > %s
+                      AND m.Res_ID = %s
+                """, (average_price, rid))
+                items = cursor.fetchall()
+
+        cursor.close()
+        db.close()
+
+        return render_template('restaurant_items_above_average.html', items=items, average_price=average_price)
+    else:
+        return redirect('/login')
+
+
+
 
 @app.route('/logout')
 def logout():
