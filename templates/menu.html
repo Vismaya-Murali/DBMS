@@ -98,15 +98,19 @@
         }
     </style>
     <script>
-        function updateQuantity(itemId, change) {
+        function updateQuantity(itemId, change, maxQuantity) {
             const quantityInput = document.getElementById('quantity-' + itemId);
             let quantity = parseInt(quantityInput.value) || 0;
             quantity += change;
+    
+            // Ensure quantity doesn't go below 0 or exceed the available stock
             if (quantity < 0) quantity = 0;
-            if (quantity > 10) quantity = 10;
+            if (quantity > maxQuantity) quantity = maxQuantity;
+    
             quantityInput.value = quantity;
         }
     </script>
+    
 </head>
 <body>
     <div class="navbar">
@@ -128,11 +132,11 @@
                     <p>Available: {{ item[3] }}</p>
                     <div class="quantity-container">
                         <button type="button" class="quantity-btn" 
-                                onclick="updateQuantity('{{ item[0] }}', -1)" 
+                                onclick="updateQuantity('{{ item[0] }}', -1,'{{ item[3]}}')" 
                                 {% if item[3] == 0 %} disabled {% endif %}>-</button>
                         <input type="text" name="quantity_{{ item[0] }}" id="quantity-{{ item[0] }}" value="0" readonly class="quantity-input">
                         <button type="button" class="quantity-btn" 
-                                onclick="updateQuantity('{{ item[0] }}', 1)" 
+                                onclick="updateQuantity('{{ item[0] }}', 1, '{{ item[3] }}')" 
                                 {% if item[3] == 0 %} disabled {% endif %}>+</button>
                     </div>
                 </div>
